@@ -1,33 +1,15 @@
 {
-  "name": "canvas-play",
-  "description": "Canvas is an often overlooked feature in HTML5. Granted, it has it's downsides but it also has its strengths. I used this project to up-skill myself in the HTML canvas tag.",
-  "main": "index.html",
+  "name": "spinning-svgs",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "webpack serve --open --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
-    "test": "jest --watch",
-    "check-types": "tsc"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ultrachrisp/cavas-play.git"
-  },
-  "keywords": [],
-  "author": "Chris Pyke",
-  "license": "GPL",
-  "bugs": {
-    "url": "https://github.com/ultrachrisp/cavas-play/issues"
-  },
-  "homepage": "https://github.com/ultrachrisp/cavas-play#readme",
   "devDependencies": {
-    "@types/jest": "^29.5.1",
-    "html-webpack-plugin": "^5.2.0",
-    "jest": "^29.5.0",
-    "ts-loader": "^9.4.2",
-    "typescript": "^5.0.4",
-    "webpack": "^5.24.3",
-    "webpack-cli": "^5.0.2",
-    "webpack-dev-server": "^4.13.3",
-    "webpack-merge": "^5.7.3"
+    "typescript": "~5.7.2",
+    "vite": "^6.1.0"
   }
 }

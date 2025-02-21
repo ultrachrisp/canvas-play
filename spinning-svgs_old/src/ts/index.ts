@@ -1,5 +1,5 @@
-import { createCanvas, loadSvg, setCanvasSize } from './canvasHelper';
-import { CanvasObject, GeneralSettings } from './types';
+import { createCanvas, loadSvg, setCanvasSize } from './canvasHelper.ts';
+import { CanvasObject, GeneralSettings } from './types.ts';
 
 let timeOutFunctionId: number;
 const timeOutDuration: number = 250;
@@ -29,14 +29,16 @@ function onResize(obj: CanvasObject) {
 }
 
 function init() {
-  const obj = createCanvas(settings);
-  onResize(obj);
-  window.addEventListener('resize', () => {
-    clearTimeout(timeOutFunctionId);
-    timeOutFunctionId = window.setTimeout(() => onResize(obj), timeOutDuration);
-  }, false);
+  if (typeof window !== 'undefined') {
+    const obj = createCanvas(settings);
+    onResize(obj);
+    window.addEventListener('resize', () => {
+      clearTimeout(timeOutFunctionId);
+      timeOutFunctionId = window.setTimeout(() => onResize(obj), timeOutDuration);
+    }, false);
 
-  // window.requestAnimationFrame(animateParticles);
+    // window.requestAnimationFrame(animateParticles);
+  }
 }
 
 init();

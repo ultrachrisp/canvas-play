@@ -1,4 +1,4 @@
-import { CanvasObject, GeneralSettings, LoadSVG } from "./types";
+import { CanvasObject, GeneralSettings, LoadSVG } from "./types.ts";
 
 export function createCanvas(settings: GeneralSettings): CanvasObject {
   const canvas = document.createElement('canvas');
