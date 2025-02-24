@@ -1,13 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>Spinning SVGs</title>
+
+    <style>
+      .wrapper {
+        margin: 20px;
+        box-shadow: 0px 0px 8px 8px #ccc;
+      }
+    </style>
+
+    <script type="module" src="/src/main.ts"></script>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <section class="wrapper">
+      <div id="canvas">Thing</div>
+    </section>
   </body>
 </html>
