@@ -1,5 +1,5 @@
 .DS_store
-.Zone.Identifier
+*Zone.Identifier
 .cache/
 
 node_modules/
