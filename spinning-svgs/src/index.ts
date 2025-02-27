@@ -1,2 +1,5 @@
 import { App } from './App';
-(() => { new App('#canvas') })();
+
+const app = new App('#canvas');
+
+(async () => { await app.init(); })();

@@ -20,7 +20,6 @@ export class CanvasHelper {
     if (!context) throw new Error("Failed to get context");
 
     this.resize();
-    window.addEventListener('resize', () => this.resize())
   };
 
   emptyElement(element: Element) {
@@ -44,6 +43,4 @@ export class CanvasHelper {
 
     return [canvasWidth, canvasHeight];
   }
-
-
 }
