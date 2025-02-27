@@ -2,6 +2,7 @@ import { createCanvas, loadSvg, setCanvasSize } from "./canvasHelper";
 import { CanvasObject, GeneralSettings } from "./types";
 
 let timeOutFunctionId: number;
+let animationObject: CanvasObject;
 const timeOutDuration: number = 250;
 
 const settings: GeneralSettings = {
@@ -13,9 +14,20 @@ const settings: GeneralSettings = {
   colours: ["#000000", "#73505d", "#312f43", "#5c7364", "#736d5c", "#3a3834"],
 };
 
-// function animateParticles(timestamp: number) {
-//   window.requestAnimationFrame(animateParticles);
-// }
+function updateParticles() {
+  let i = animateParticles.particles.length;
+  while (i--) {
+    animateParticles.particles[i].update();
+  }
+}
+
+function animateParticles(timestamp: DOMHighResTimeStamp) {
+  // if (animationObject.start === -1) animationObject.start = timestamp;
+  // animationObject.currentTime = timestamp - animationObject.start;
+
+  updateParticles();
+  requestAnimationFrame(animateParticles);
+}
 
 function onResize(obj: CanvasObject) {
   setCanvasSize(obj);
@@ -29,17 +41,17 @@ function onResize(obj: CanvasObject) {
 
 function init() {
   if (typeof window !== "undefined") {
-    const obj = createCanvas(settings);
-    onResize(obj);
+    animationObject = createCanvas(settings);
+    onResize(animationObject);
     window.addEventListener("resize", () => {
       clearTimeout(timeOutFunctionId);
       timeOutFunctionId = window.setTimeout(
-        () => onResize(obj),
+        () => onResize(animationObject),
         timeOutDuration,
       );
     }, false);
 
-    // window.requestAnimationFrame(animateParticles);
+    requestAnimationFrame(animateParticles);
   }
 }
 

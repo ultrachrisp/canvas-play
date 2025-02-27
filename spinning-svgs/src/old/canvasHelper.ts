@@ -16,7 +16,7 @@ export function createCanvas(settings: GeneralSettings): CanvasObject {
   element.innerHTML = "";
   element.appendChild(canvas);
 
-  const { canvasWidth, canvasHeight } = initCanvasSize({ canvas, element });
+  const { canvasWidth, canvasHeight } = getCanvasDimensions(element);
   const grid = setGrid({
     canvasWidth,
     canvasHeight,
@@ -35,16 +35,9 @@ export function createCanvas(settings: GeneralSettings): CanvasObject {
     particleHeight: svgWidth,
     xOffset: 0,
     yOffset: 0,
+    start: -1,
+    currentTime: 0
   };
-}
-
-function initCanvasSize(
-  { canvas, element }: { canvas: HTMLCanvasElement; element: Element },
-) {
-  const { canvasWidth, canvasHeight } = getCanvasDimensions(element);
-  canvas.width = canvasWidth;
-  canvas.height = canvasHeight;
-  return { canvasWidth, canvasHeight };
 }
 
 export function setCanvasSize(obj: CanvasObject) {
@@ -52,6 +45,7 @@ export function setCanvasSize(obj: CanvasObject) {
 
   obj.width = obj.canvas.width = canvasWidth;
   obj.height = obj.canvas.height = canvasHeight;
+
   obj.xOffset = Math.floor(obj.width % obj.particleWidth) / 2;
   obj.yOffset = Math.floor(obj.height % obj.particleHeight) / 2;
 

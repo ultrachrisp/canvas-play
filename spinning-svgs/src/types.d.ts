@@ -17,6 +17,8 @@ export interface CanvasObject {
   particleHeight: number;
   xOffset: number;
   yOffset: number;
+  start: DOMHighResTimeStamp;
+  currentTime: DOMHighResTimeStamp;
 }
 
 export interface GridParams {
