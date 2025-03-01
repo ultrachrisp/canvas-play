@@ -36,7 +36,7 @@ export function createCanvas(settings: GeneralSettings): CanvasObject {
     xOffset: 0,
     yOffset: 0,
     start: -1,
-    currentTime: 0
+    currentTime: 0,
   };
 }
 

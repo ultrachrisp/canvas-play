@@ -10,15 +10,15 @@ export interface CanvasObject {
   element: Element;
   context: CanvasRenderingContext2D;
   canvas: HTMLCanvasElement;
-  grid: Array<Array<number>>;
-  width: number;
-  height: number;
-  particleWidth: number;
-  particleHeight: number;
-  xOffset: number;
-  yOffset: number;
-  start: DOMHighResTimeStamp;
-  currentTime: DOMHighResTimeStamp;
+  // grid: Array<Array<number>>;
+  canvasWidth: number;
+  canvasHeight: number;
+  // particleWidth: number;
+  // particleHeight: number;
+  // xOffset: number;
+  // yOffset: number;
+  // start: DOMHighResTimeStamp;
+  // currentTime: DOMHighResTimeStamp;
 }
 
 export interface GridParams {

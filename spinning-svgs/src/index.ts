@@ -1,5 +1,7 @@
-import { App } from './App';
+import { App } from "./App";
 
-const app = new App('#canvas');
+const app = new App();
 
-(async () => { await app.init(); })();
+(async () => {
+  await app.init();
+})();
