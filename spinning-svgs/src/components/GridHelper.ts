@@ -1,5 +1,6 @@
 import { GeneralSettings, LoadSVG } from "../types";
 import { CanvasHelper } from "./CanvasHelper";
+import { ParticleHelper } from "./ParticleHelper";
 
 interface GridParams {
   canvasWidth: number;
@@ -9,9 +10,11 @@ interface GridParams {
 }
 
 export class GridHelper {
-  grid: Array<Array<number>>;
+  grid: Array<Array<number | ParticleHelper>>;
   settings: GeneralSettings;
   canvasHelper: CanvasHelper;
+  particles: Array<ParticleHelper>;
+  image: HTMLImageElement;
 
   constructor(
     canvasHelper: CanvasHelper,
@@ -26,6 +29,9 @@ export class GridHelper {
       particleWidth: this.settings.svgWidth,
       particleHeight: this.settings.svgWidth,
     });
+
+    this.particles = [];
+    // this.image = this.loadSvg({ settings: this.settings, obj: this.canvasHelper, x, y });
   }
 
   init() {
@@ -37,25 +43,37 @@ export class GridHelper {
   populateGrid() {
     this.grid.forEach((row, x) => {
       row.forEach((_, y) => {
+
         this.loadSvg({ settings: this.settings, obj: this.canvasHelper, x, y });
+
+        const particle = new ParticleHelper({
+          width: this.settings.svgWidth,
+          height: this.settings.svgWidth,
+          arrayPositionX: x,
+          arrayPositionY: y,
+          CanvasContext: this.canvasHelper.context,
+        });
+
+        // unsure that I need both
+        this.particles.push(particle);
+        this.grid[x][y] = particle;
       });
     });
   }
 
   loadSvg({ settings, obj, x, y }: LoadSVG) {
-    const { svg, svgQuery, colours } = settings,
-      result = svg.replace(svgQuery, colours[1]),
-      uri = encodeURIComponent(result),
-      img = new Image();
+    const { svg, svgQuery, colours } = settings;
+    const result = svg.replace(svgQuery, colours[1]);
+    const uri = encodeURIComponent(result);
+    const img = new Image();
 
     img.onload = () => {
-      // const xPos = (x * obj.particleWidth) + obj.xOffset;
-      // const yPos = (y * obj.particleHeight) + obj.yOffset;
       const xPos = x * settings.svgWidth;
       const yPos = y * settings.svgWidth;
       obj.context.drawImage(img, xPos, yPos);
     };
     img.src = `data:image/svg+xml,${uri}`;
+    return img;
   }
 
   resize() {
@@ -66,8 +84,7 @@ export class GridHelper {
       particleHeight: this.settings.svgWidth,
     });
     this.populateGrid();
-    console.log("resize: ", this.grid);
-    console.log("resize: ", this.canvasHelper);
+
   }
   update() {}
 }
