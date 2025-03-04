@@ -26,7 +26,7 @@ export class App {
     this.gridHelper.init();
   }
 
-  async init() {
+  init() {
     this.resize();
     this.update();
 
