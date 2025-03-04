@@ -1,6 +1,6 @@
 import { GeneralSettings } from "../types";
 import { CanvasHelper } from "./CanvasHelper";
-import { ParticleHelper } from "./ParticleHelper";
+import { ParticleHelper } from "./Particle";
 
 interface GridParams {
   canvasWidth: number;

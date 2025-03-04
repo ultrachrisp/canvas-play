@@ -1,5 +1,5 @@
 import { CanvasHelper } from "./components/CanvasHelper";
-import { GridHelper } from "./components/GridHelper";
+import { GridHelper } from "./components/GridManager";
 import { GeneralSettings } from "./types";
 
 const settings: GeneralSettings = {
