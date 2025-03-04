@@ -30,7 +30,7 @@ export interface GridParams {
 
 export interface LoadSVG {
   settings: GeneralSettings;
-  obj: CanvasObject;
-  x: number;
-  y: number;
+  // obj: CanvasObject;
+  // x: number;
+  // y: number;
 }

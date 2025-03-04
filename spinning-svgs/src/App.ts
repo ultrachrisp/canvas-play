@@ -14,8 +14,10 @@ const settings: GeneralSettings = {
 export class App {
   canvasHelper: CanvasHelper;
   gridHelper: GridHelper;
+  animationID: number;
 
   constructor() {
+    this.animationID = 0;
     this.canvasHelper = new CanvasHelper(settings);
     this.canvasHelper.init();
 
@@ -25,13 +27,41 @@ export class App {
 
   async init() {
     this.resize();
-    addEventListener("resize", () => this.resize());
+    this.update();
+
+    addEventListener("resize", debounce(() => this.resize(), 300));
   }
 
   resize() {
+    // cancelAnimationFrame(this.animationID);
     this.canvasHelper.resize();
     this.gridHelper.resize();
+
+    this.update();
   }
 
-  update() {}
+  updateParticles() {
+    this.gridHelper.update();
+  }
+
+  renderParticles() {
+    this.gridHelper.draw();
+  }
+
+  update() {
+    this.updateParticles();
+    this.renderParticles();
+    // this.animationID = requestAnimationFrame(() => this.update());
+  }
+}
+
+function debounce<F extends (...args: Parameters<F>) => ReturnType<F>>(
+  func: F,
+  waitFor: number,
+): (...args: Parameters<F>) => void {
+  let timeout: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<F>): void => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), waitFor);
+  };
 }

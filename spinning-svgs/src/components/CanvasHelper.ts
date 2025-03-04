@@ -5,11 +5,10 @@ export class CanvasHelper {
   element: Element;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
-  canvasWidth: number;
-  canvasHeight: number;
 
   constructor(settings: GeneralSettings) {
     this.settings = settings;
+
     const element = document.querySelector(this.settings.tag);
     if (!element) {
       throw new Error(
@@ -20,14 +19,8 @@ export class CanvasHelper {
     emptyElement(element);
     this.element = element;
 
-    this.canvas = document.createElement("canvas");
+    [this.canvas, this.context] = create2dCanvas();
     this.element.appendChild(this.canvas);
-    this.canvasWidth = 0;
-    this.canvasHeight = 0;
-
-    const context = this.canvas.getContext("2d");
-    if (!context) throw new Error("Failed to get context");
-    this.context = context;
   }
 
   init() {
@@ -35,12 +28,10 @@ export class CanvasHelper {
   }
 
   resize() {
-    const [canvasWidth, canvasHeight] = getAvailableSpace(
+    [this.canvas.width, this.canvas.height] = getAvailableSpace(
       this.element,
       this.settings,
     );
-    this.canvasWidth = this.canvas.width = canvasWidth;
-    this.canvasHeight = this.canvas.height = canvasHeight;
   }
 }
 
@@ -48,14 +39,18 @@ function emptyElement(element: Element) {
   element.replaceChildren();
 }
 
+function create2dCanvas(): [HTMLCanvasElement, CanvasRenderingContext2D] {
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Failed to get context");
+
+  return [canvas, context];
+}
+
 function getAvailableSpace(element: Element, settings: GeneralSettings) {
-  const boundingRect = element.getBoundingClientRect();
-  const availableWidth = boundingRect.width;
-  const availableHeight = boundingRect.height;
-  const canvasWidth = Math.floor(availableWidth / settings.svgWidth) *
+  const canvasWidth = Math.floor(element.getBoundingClientRect().width / settings.svgWidth) *
     settings.svgWidth;
-  // const canvasHeight = window.innerHeight - (boundingRect.top * 2);
-  const canvasHeight = Math.floor(availableHeight / settings.svgWidth) *
+  const canvasHeight = Math.floor(element.getBoundingClientRect().height / settings.svgWidth) *
     settings.svgWidth;
 
   /** Usful to keep a square shape*/
