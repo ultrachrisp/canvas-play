@@ -51,7 +51,7 @@ export class App {
   update() {
     this.updateParticles();
     this.renderParticles();
-    // this.animationID = requestAnimationFrame(() => this.update());
+    this.animationID = requestAnimationFrame(() => this.update());
   }
 }
 

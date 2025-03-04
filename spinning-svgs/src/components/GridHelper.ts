@@ -14,7 +14,6 @@ export class GridHelper {
   settings: GeneralSettings;
   canvasHelper: CanvasHelper;
   particles: Array<ParticleHelper>;
-  image: HTMLImageElement;
   canvasImage: HTMLCanvasElement;
 
   constructor(
@@ -36,7 +35,7 @@ export class GridHelper {
     });
 
     this.particles = [];
-    this.image = this.loadSvg(this.settings);
+    this.canvasImage = this.loadSvg(this.settings, this.canvasHelper);
   }
 
   init() {
@@ -57,7 +56,7 @@ export class GridHelper {
           arrayPositionX: x,
           arrayPositionY: y,
           CanvasContext: this.canvasHelper.context,
-          image: this.image
+          offScreenCanvas: this.canvasHelper.offScreenCanvas,
         });
 
         // unsure that I need both
@@ -83,19 +82,17 @@ export class GridHelper {
   //   return img;
   // }
 
-  loadSvg(settings: GeneralSettings) {
+  loadSvg(settings: GeneralSettings, canvasHelper: CanvasHelper) {
     const { svg, svgQuery, colours } = settings;
     const result = svg.replace(svgQuery, colours[1]);
     const uri = encodeURIComponent(result);
     const img = new Image();
 
-    // img.onload = () => {
-    //   const xPos = x * settings.svgWidth;
-    //   const yPos = y * settings.svgWidth;
-    //   obj.context.drawImage(img, xPos, yPos);
-    // };
+    img.onload = () => {
+      canvasHelper.offScreenContext.drawImage(img, 0, 0);
+    };
     img.src = `data:image/svg+xml,${uri}`;
-    return img;
+    return canvasHelper.offScreenCanvas;
   }
 
   resize() {

@@ -5,6 +5,8 @@ export class CanvasHelper {
   element: Element;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
+  offScreenCanvas: HTMLCanvasElement;
+  offScreenContext: CanvasRenderingContext2D;
 
   constructor(settings: GeneralSettings) {
     this.settings = settings;
@@ -21,6 +23,9 @@ export class CanvasHelper {
 
     [this.canvas, this.context] = create2dCanvas();
     this.element.appendChild(this.canvas);
+
+    [this.offScreenCanvas, this.offScreenContext] = create2dCanvas();
+    this.offScreenCanvas.width = this.offScreenCanvas.height = this.settings.svgWidth;
   }
 
   init() {
