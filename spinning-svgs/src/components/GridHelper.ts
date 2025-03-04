@@ -14,7 +14,7 @@ export class GridHelper {
   settings: GeneralSettings;
   canvasHelper: CanvasHelper;
   particles: Array<ParticleHelper>;
-  canvasImage: HTMLCanvasElement;
+  spriteCanvas: HTMLCanvasElement;
 
   constructor(
     canvasHelper: CanvasHelper,
@@ -22,10 +22,6 @@ export class GridHelper {
   ) {
     this.settings = settings;
     this.canvasHelper = canvasHelper;
-
-    this.canvasImage = document.createElement('canvas');
-    this.canvasImage.width = this.canvasHelper.canvas.width;
-    this.canvasImage.height = this.canvasHelper.canvas.height;
 
     this.grid = setGrid({
       canvasWidth: this.canvasHelper.canvas.width,
@@ -35,28 +31,23 @@ export class GridHelper {
     });
 
     this.particles = [];
-    this.canvasImage = this.loadSvg(this.settings, this.canvasHelper);
+    this.spriteCanvas = this.loadSvg(this.settings, this.canvasHelper);
   }
 
   init() {
     this.populateGrid();
-    // console.log("init: ", this.grid);
-    // console.log("init: ", this.canvasHelper);
   }
 
   populateGrid() {
     this.grid.forEach((row, x) => {
       row.forEach((_, y) => {
-
-        // this.loadSvg({ settings: this.settings, obj: this.canvasHelper, x, y });
-
         const particle = new ParticleHelper({
           width: this.settings.svgWidth,
           height: this.settings.svgWidth,
           arrayPositionX: x,
           arrayPositionY: y,
           CanvasContext: this.canvasHelper.context,
-          offScreenCanvas: this.canvasHelper.offScreenCanvas,
+          offScreenCanvas: this.canvasHelper.offScreenSpriteCanvas,
         });
 
         // unsure that I need both
@@ -66,33 +57,29 @@ export class GridHelper {
     });
   }
 
-  // The old way
-  // loadSvg({ settings, obj, x, y }: LoadSVG) {
-  //   const { svg, svgQuery, colours } = settings;
-  //   const result = svg.replace(svgQuery, colours[1]);
-  //   const uri = encodeURIComponent(result);
-  //   const img = new Image();
-
-  //   img.onload = () => {
-  //     const xPos = x * settings.svgWidth;
-  //     const yPos = y * settings.svgWidth;
-  //     obj.context.drawImage(img, xPos, yPos);
-  //   };
-  //   img.src = `data:image/svg+xml,${uri}`;
-  //   return img;
-  // }
-
   loadSvg(settings: GeneralSettings, canvasHelper: CanvasHelper) {
     const { svg, svgQuery, colours } = settings;
-    const result = svg.replace(svgQuery, colours[1]);
-    const uri = encodeURIComponent(result);
-    const img = new Image();
 
-    img.onload = () => {
-      canvasHelper.offScreenContext.drawImage(img, 0, 0);
-    };
-    img.src = `data:image/svg+xml,${uri}`;
-    return canvasHelper.offScreenCanvas;
+    let i = this.settings.colours.length;
+    while (i--) {
+      const result = svg.replace(svgQuery, colours[i]);
+      const uri = encodeURIComponent(result);
+      const img = new Image();
+      const xOffset = i * settings.svgWidth;
+
+      img.onload = () => {
+        canvasHelper.offScreenSpriteContext.drawImage(
+          img,
+          xOffset,
+          0,
+          settings.svgWidth,
+          settings.svgWidth,
+        );
+      };
+      img.src = `data:image/svg+xml,${uri}`;
+    }
+
+    return canvasHelper.offScreenSpriteCanvas;
   }
 
   resize() {
@@ -107,7 +94,6 @@ export class GridHelper {
       particleHeight: this.settings.svgWidth,
     });
     this.populateGrid();
-
   }
 
   update() {
@@ -120,17 +106,20 @@ export class GridHelper {
   draw() {
     clearCanvas(this.canvasHelper);
 
-    // this.canvasHelper.context.save();
     let i = this.particles.length;
     while (i--) {
       this.particles[i].draw();
     }
-    // this.canvasHelper.context.restore();
   }
 }
 
 function clearCanvas(canvasHelper: CanvasHelper) {
-  return canvasHelper.context.clearRect(0, 0, canvasHelper.canvas.width, canvasHelper.canvas.height)
+  return canvasHelper.context.clearRect(
+    0,
+    0,
+    canvasHelper.canvas.width,
+    canvasHelper.canvas.height,
+  );
 }
 
 function setGrid(
@@ -138,8 +127,6 @@ function setGrid(
 ): Array<Array<number>> {
   const rows = Math.floor(canvasHeight / particleHeight);
   const coloumns = Math.floor(canvasWidth / particleWidth);
-  // const rows = 10;
-  // const coloumns = 10;
 
   return (new Array(coloumns).fill(0).map(() => new Array(rows).fill(0)));
 }

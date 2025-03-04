@@ -5,8 +5,8 @@ export class CanvasHelper {
   element: Element;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
-  offScreenCanvas: HTMLCanvasElement;
-  offScreenContext: CanvasRenderingContext2D;
+  offScreenSpriteCanvas: HTMLCanvasElement;
+  offScreenSpriteContext: CanvasRenderingContext2D;
 
   constructor(settings: GeneralSettings) {
     this.settings = settings;
@@ -24,8 +24,14 @@ export class CanvasHelper {
     [this.canvas, this.context] = create2dCanvas();
     this.element.appendChild(this.canvas);
 
-    [this.offScreenCanvas, this.offScreenContext] = create2dCanvas();
-    this.offScreenCanvas.width = this.offScreenCanvas.height = this.settings.svgWidth;
+    [this.offScreenSpriteCanvas, this.offScreenSpriteContext] =
+      create2dCanvas();
+
+    // creating a single canvas for all the colours
+    this.offScreenSpriteCanvas.width = this.settings.colours.length *
+      this.settings.svgWidth;
+    this.offScreenSpriteCanvas.height = this.settings.svgWidth;
+    // this.element.appendChild(this.offScreenSpriteCanvas);
   }
 
   init() {
@@ -47,15 +53,17 @@ function emptyElement(element: Element) {
 function create2dCanvas(): [HTMLCanvasElement, CanvasRenderingContext2D] {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
-  if (!context) throw new Error("Failed to get context");
+  if (!context) throw new Error("Failed to get 2D canvas context");
 
   return [canvas, context];
 }
 
 function getAvailableSpace(element: Element, settings: GeneralSettings) {
-  const canvasWidth = Math.floor(element.getBoundingClientRect().width / settings.svgWidth) *
+  const canvasWidth =
+    Math.floor(element.getBoundingClientRect().width / settings.svgWidth) *
     settings.svgWidth;
-  const canvasHeight = Math.floor(element.getBoundingClientRect().height / settings.svgWidth) *
+  const canvasHeight =
+    Math.floor(element.getBoundingClientRect().height / settings.svgWidth) *
     settings.svgWidth;
 
   /** Usful to keep a square shape*/

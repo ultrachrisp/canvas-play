@@ -18,10 +18,20 @@ export class ParticleHelper {
   translateY: number;
   angle: number;
   radians: number;
+  colour: number;
   canvasContext: CanvasRenderingContext2D;
   offScreenCanvas: HTMLCanvasElement;
 
-  constructor({ width, height, arrayPositionX, arrayPositionY, CanvasContext, offScreenCanvas }: Particle) {
+  constructor(
+    {
+      width,
+      height,
+      arrayPositionX,
+      arrayPositionY,
+      CanvasContext,
+      offScreenCanvas,
+    }: Particle,
+  ) {
     this.width = width;
     this.height = height;
     this.arrayPositionX = arrayPositionX;
@@ -36,6 +46,8 @@ export class ParticleHelper {
 
     this.canvasContext = CanvasContext;
     this.offScreenCanvas = offScreenCanvas;
+    // temp, to check spritesheet is workingn
+    this.colour = randomIntFromInterval(0, 5);
   }
 
   init() {}
@@ -49,9 +61,22 @@ export class ParticleHelper {
     this.canvasContext.save();
     this.canvasContext.translate(this.translateX, this.translateY);
     this.canvasContext.rotate(this.radians);
-    this.canvasContext.drawImage(this.offScreenCanvas, -this.centerX, -this.centerY, this.width, this.height);
+    this.canvasContext.drawImage(
+      this.offScreenCanvas,
+      this.colour * this.width,
+      0,
+      this.width,
+      this.height,
+      -this.centerX,
+      -this.centerY,
+      this.width,
+      this.height,
+    );
     this.canvasContext.restore();
   }
 }
 
-
+// temp, to check spritesheet is working
+function randomIntFromInterval(min, max) { // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
