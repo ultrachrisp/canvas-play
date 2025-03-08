@@ -7,6 +7,8 @@ interface Particle {
   offScreenCanvas: HTMLCanvasElement;
 }
 
+type AnimationState = "spin" | "fadeOut" | "fadeIn";
+
 export class ParticleHelper {
   width: number;
   height: number;
@@ -21,6 +23,7 @@ export class ParticleHelper {
   colour: number;
   canvasContext: CanvasRenderingContext2D;
   offScreenCanvas: HTMLCanvasElement;
+  state: AnimationState;
 
   constructor(
     {
@@ -48,13 +51,28 @@ export class ParticleHelper {
     this.offScreenCanvas = offScreenCanvas;
     // temp, to check spritesheet is workingn
     this.colour = randomIntFromInterval(0, 5);
+    this.state = "spin";
   }
 
   init() {}
 
+  fadeIn() {
+  }
+
+  fadeOut() {}
+
   update() {
     this.angle = (this.angle > 360) ? 0 : this.angle + 0.5;
     this.radians = this.angle * (Math.PI / 180);
+
+    switch (this.state) {
+      case "fadeIn":
+        this.fadeIn();
+        break;
+      case "fadeOut":
+        this.fadeOut();
+        break;
+    }
   }
 
   draw() {

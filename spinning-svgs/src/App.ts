@@ -1,6 +1,6 @@
 import { CanvasHelper } from "./components/CanvasHelper";
 import { GridHelper } from "./components/GridManager";
-import { GeneralSettings } from "./types";
+import { GeneralSettings } from "./types.d";
 
 const settings: GeneralSettings = {
   tag: "#canvas",
@@ -16,6 +16,7 @@ export class App {
   canvasHelper: CanvasHelper;
   gridHelper: GridHelper;
   animationID: number;
+  startTime: number;
 
   constructor() {
     this.animationID = 0;
@@ -24,6 +25,8 @@ export class App {
 
     this.gridHelper = new GridHelper(this.canvasHelper, settings);
     this.gridHelper.init();
+
+    this.startTime = -1;
   }
 
   init() {
@@ -49,10 +52,14 @@ export class App {
     this.gridHelper.draw();
   }
 
-  update() {
+  update(timeStamp = 0) {
+    if (this.startTime === -1) this.startTime = timeStamp;
+    this.gridHelper.currentTime = timeStamp - this.startTime;
+
     this.updateParticles();
     this.renderParticles();
-    this.animationID = requestAnimationFrame(() => this.update());
+
+    this.animationID = requestAnimationFrame(this.update);
   }
 }
 

@@ -9,12 +9,20 @@ interface GridParams {
   particleHeight: number;
 }
 
+// type SelectedParticle = {
+//   positionX: number;
+//   positionY: number
+// }
+
+type MatrixGrid = Array<Array<number | ParticleHelper>>;
+
 export class GridHelper {
-  grid: Array<Array<number | ParticleHelper>>;
+  grid: MatrixGrid;
   settings: GeneralSettings;
   canvasHelper: CanvasHelper;
   particles: Array<ParticleHelper>;
   spriteCanvas: HTMLCanvasElement;
+  currentTime: number;
 
   constructor(
     canvasHelper: CanvasHelper,
@@ -32,10 +40,22 @@ export class GridHelper {
 
     this.particles = [];
     this.spriteCanvas = this.loadSvg(this.settings, this.canvasHelper);
+    this.currentTime = -1;
   }
 
   init() {
     this.populateGrid();
+
+    this.canvasHelper.canvas.addEventListener("click", (evt) => {
+      const [mouseX, mouseY] = getMouseCoordinates(evt, this.canvasHelper);
+      const clickedParticle = findParticle(
+        mouseX,
+        mouseY,
+        this.grid,
+        this.settings.svgWidth,
+      );
+      clickedParticle.state = "fadeOut";
+    }, false);
   }
 
   populateGrid() {
@@ -111,6 +131,26 @@ export class GridHelper {
       this.particles[i].draw();
     }
   }
+}
+
+function getMouseCoordinates(evt: MouseEvent, canvasHelper: CanvasHelper) {
+  const boundingRect = canvasHelper.canvas.getBoundingClientRect();
+  const mouseX = evt.clientX - boundingRect.left;
+  const mouseY = evt.clientY - boundingRect.top;
+  return [mouseX, mouseY];
+}
+
+function findParticle(
+  mouseX: number,
+  mouseY: number,
+  grid: MatrixGrid,
+  svgWidth: number,
+): ParticleHelper {
+  const x = Math.floor(mouseX / svgWidth);
+  const y = Math.floor(mouseY / svgWidth);
+
+  // NOTE! Come back to this
+  return grid[x][y] as ParticleHelper;
 }
 
 function clearCanvas(canvasHelper: CanvasHelper) {
