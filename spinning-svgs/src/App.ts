@@ -13,58 +13,40 @@ const settings: GeneralSettings = {
   colours: ["#000000", "#73505d", "#615b8f", "#5c7364", "#736d5c", "#ada555"],
 };
 
-export class App {
-  canvasHelper: CanvasHelper;
-  gridHelper: GridHelper;
-  animationID: number;
-  startTime: number;
-  animationTimer: AnimationTimer;
+const animationTimer = AnimationTimer.getInstance();
+const canvasHelper = new CanvasHelper(settings);
+const gridHelper = new GridHelper(canvasHelper, settings);
 
-  constructor() {
-    this.animationID = 0;
-    this.canvasHelper = new CanvasHelper(settings);
-    this.canvasHelper.init();
+export function StartApp() {
+  canvasHelper.init();
+  gridHelper.init();
 
-    this.gridHelper = new GridHelper(this.canvasHelper, settings);
-    this.gridHelper.init();
+  onResize();
+  animationLoop(performance.now());
 
-    this.startTime = -1;
-    this.animationTimer = AnimationTimer.getInstance();
-  }
+  addEventListener("resize", debounce(() => onResize(), 300));
+}
 
-  init() {
-    this.resize();
-    this.update(performance.now());
+function onResize() {
+  canvasHelper.resize();
+  gridHelper.resize();
+}
 
-    addEventListener("resize", debounce(() => this.resize(), 300));
-  }
+function updateParticles() {
+  gridHelper.update();
+}
 
-  resize() {
-    // cancelAnimationFrame(this.animationID);
-    this.canvasHelper.resize();
-    this.gridHelper.resize();
+function renderParticles() {
+  gridHelper.draw();
+}
 
-    this.update(performance.now());
-  }
+function animationLoop(timeStamp: DOMHighResTimeStamp) {
+  animationTimer.setTimestamp(timeStamp);
 
-  updateParticles() {
-    this.gridHelper.update();
-  }
+  updateParticles();
+  renderParticles();
 
-  renderParticles() {
-    this.gridHelper.draw();
-  }
-
-  update(timeStamp: DOMHighResTimeStamp) {
-    this.animationTimer.setTimestamp(timeStamp);
-
-    this.updateParticles();
-    this.renderParticles();
-
-    this.animationID = requestAnimationFrame((timestamp) =>
-      this.update(timestamp)
-    );
-  }
+  requestAnimationFrame(animationLoop);
 }
 
 function debounce<F extends (...args: Parameters<F>) => ReturnType<F>>(

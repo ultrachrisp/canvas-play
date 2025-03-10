@@ -65,6 +65,7 @@ export class ParticleHelper {
   fadeOut() {}
 
   update() {
+    console.log("speed factor: ", this.animationTimer.getSpeedFactor());
     this.angle = (this.angle > 360)
       ? 0
       : this.angle + this.animationTimer.getSpeedFactor();

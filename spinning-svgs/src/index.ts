@@ -1,7 +1,5 @@
-import { App } from "./App";
+import { StartApp } from "./App";
 
-const app = new App();
-
-(async () => {
-  await app.init();
+(() => {
+  StartApp();
 })();
