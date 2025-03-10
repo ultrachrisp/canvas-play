@@ -14,15 +14,15 @@ interface GridParams {
 //   positionY: number
 // }
 
-type MatrixGrid = Array<Array<number | ParticleHelper>>;
+type MatrixGrid = Array<Array<ParticleHelper>>;
 
 export class GridHelper {
   grid: MatrixGrid;
+  gridRows: number;
+  gridColumns: number;
   settings: GeneralSettings;
   canvasHelper: CanvasHelper;
-  particles: Array<ParticleHelper>;
   spriteCanvas: HTMLCanvasElement;
-  currentTime: number;
 
   constructor(
     canvasHelper: CanvasHelper,
@@ -31,21 +31,22 @@ export class GridHelper {
     this.settings = settings;
     this.canvasHelper = canvasHelper;
 
-    this.grid = setGrid({
+    const [rows, columns] = calculateGrid({
       canvasWidth: this.canvasHelper.canvas.width,
       canvasHeight: this.canvasHelper.canvas.height,
       particleWidth: this.settings.svgWidth,
       particleHeight: this.settings.svgWidth,
     });
 
-    this.particles = [];
+    this.gridRows = rows;
+    this.gridColumns = columns;
+
+    this.grid = populateGrid(rows, columns, this.settings, this.canvasHelper);
+
     this.spriteCanvas = this.loadSvg(this.settings, this.canvasHelper);
-    this.currentTime = -1;
   }
 
   init() {
-    this.populateGrid();
-
     this.canvasHelper.canvas.addEventListener("click", (evt) => {
       const [mouseX, mouseY] = getMouseCoordinates(evt, this.canvasHelper);
       const clickedParticle = findParticle(
@@ -56,25 +57,6 @@ export class GridHelper {
       );
       clickedParticle.state = "fadeOut";
     }, false);
-  }
-
-  populateGrid() {
-    this.grid.forEach((row, x) => {
-      row.forEach((_, y) => {
-        const particle = new ParticleHelper({
-          width: this.settings.svgWidth,
-          height: this.settings.svgWidth,
-          arrayPositionX: x,
-          arrayPositionY: y,
-          CanvasContext: this.canvasHelper.context,
-          offScreenCanvas: this.canvasHelper.offScreenSpriteCanvas,
-        });
-
-        // unsure that I need both
-        this.particles.push(particle);
-        this.grid[x][y] = particle;
-      });
-    });
   }
 
   loadSvg(settings: GeneralSettings, canvasHelper: CanvasHelper) {
@@ -104,33 +86,68 @@ export class GridHelper {
 
   resize() {
     clearCanvas(this.canvasHelper);
-    this.grid = [];
-    this.particles = [];
 
-    this.grid = setGrid({
+    const [rows, columns] = calculateGrid({
       canvasWidth: this.canvasHelper.canvas.width,
       canvasHeight: this.canvasHelper.canvas.height,
       particleWidth: this.settings.svgWidth,
       particleHeight: this.settings.svgWidth,
     });
-    this.populateGrid();
+    this.gridRows = rows;
+    this.gridColumns = columns;
+
+    this.grid = populateGrid(rows, columns, this.settings, this.canvasHelper);
   }
 
   update() {
-    let i = this.particles.length;
+    let i = this.gridRows;
+    let j = this.gridColumns;
     while (i--) {
-      this.particles[i].update();
+      if (j < 0) j = this.gridColumns;
+      while (j--) {
+        this.grid[i][j].update();
+      }
     }
   }
 
   draw() {
     clearCanvas(this.canvasHelper);
 
-    let i = this.particles.length;
+    let i = this.gridRows;
+    let j = this.gridColumns;
     while (i--) {
-      this.particles[i].draw();
+      if (j < 0) j = this.gridColumns;
+      while (j--) {
+        this.grid[i][j].draw();
+      }
     }
   }
+}
+
+function populateGrid(
+  rows: number,
+  columns: number,
+  settings: GeneralSettings,
+  canvasHelper: CanvasHelper,
+) {
+  let grid = new Array(rows);
+
+  for (let i = 0; i < rows; i++) {
+    grid[i] = new Array(columns);
+    for (let j = 0; j < columns; j++) {
+      const particle = new ParticleHelper({
+        width: settings.svgWidth,
+        height: settings.svgWidth,
+        arrayPositionX: i,
+        arrayPositionY: j,
+        CanvasContext: canvasHelper.context,
+        offScreenCanvas: canvasHelper.offScreenSpriteCanvas,
+      });
+      grid[i][j] = particle;
+    }
+  }
+
+  return grid;
 }
 
 function getMouseCoordinates(evt: MouseEvent, canvasHelper: CanvasHelper) {
@@ -149,8 +166,7 @@ function findParticle(
   const x = Math.floor(mouseX / svgWidth);
   const y = Math.floor(mouseY / svgWidth);
 
-  // NOTE! Come back to this
-  return grid[x][y] as ParticleHelper;
+  return grid[x][y];
 }
 
 function clearCanvas(canvasHelper: CanvasHelper) {
@@ -162,11 +178,11 @@ function clearCanvas(canvasHelper: CanvasHelper) {
   );
 }
 
-function setGrid(
+function calculateGrid(
   { canvasWidth, canvasHeight, particleWidth, particleHeight }: GridParams,
-): Array<Array<number>> {
-  const rows = Math.floor(canvasHeight / particleHeight);
-  const coloumns = Math.floor(canvasWidth / particleWidth);
+) {
+  const rows = Math.floor(canvasWidth / particleWidth);
+  const columns = Math.floor(canvasHeight / particleHeight);
 
-  return (new Array(coloumns).fill(0).map(() => new Array(rows).fill(0)));
+  return [rows, columns];
 }

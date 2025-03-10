@@ -7,7 +7,6 @@ export class CanvasHelper {
   context: CanvasRenderingContext2D;
   offScreenSpriteCanvas: HTMLCanvasElement;
   offScreenSpriteContext: CanvasRenderingContext2D;
-  // selectedParticle: SelectedParticle;
 
   constructor(settings: GeneralSettings) {
     this.settings = settings;
@@ -47,7 +46,7 @@ export class CanvasHelper {
   resize() {
     [this.canvas.width, this.canvas.height] = getAvailableSpace(
       this.element,
-      this.settings,
+      this.settings.svgWidth,
     );
   }
 }
@@ -64,12 +63,12 @@ function create2dCanvas(): [HTMLCanvasElement, CanvasRenderingContext2D] {
   return [canvas, context];
 }
 
-function getAvailableSpace(element: Element, settings: GeneralSettings) {
-  const boundingRect = element.getBoundingClientRect();
-  const canvasWidth = Math.floor(boundingRect.width / settings.svgWidth) *
-    settings.svgWidth;
-  const canvasHeight = Math.floor(boundingRect.height / settings.svgWidth) *
-    settings.svgWidth;
+function getAvailableSpace(element: Element, cellWidth: number) {
+  const { width, height } = element.getBoundingClientRect();
+  const canvasWidth = Math.floor(width / cellWidth) *
+    cellWidth;
+  const canvasHeight = Math.floor(height / cellWidth) *
+    cellWidth;
 
   /** Usful to keep a square shape*/
   // const possibleHeight = window.innerHeight - (boundingRect.top * 2);
