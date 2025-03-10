@@ -1,6 +1,7 @@
+import { AnimationTimer } from "./components/AnimationTimer";
 import { CanvasHelper } from "./components/CanvasHelper";
-import { GridHelper } from "./components/GridHelper";
-import { GeneralSettings } from "./types";
+import { GridHelper } from "./components/GridManager";
+import { GeneralSettings } from "./types.d";
 
 const settings: GeneralSettings = {
   tag: "#canvas",
@@ -12,48 +13,40 @@ const settings: GeneralSettings = {
   colours: ["#000000", "#73505d", "#615b8f", "#5c7364", "#736d5c", "#ada555"],
 };
 
-export class App {
-  canvasHelper: CanvasHelper;
-  gridHelper: GridHelper;
-  animationID: number;
+const animationTimer = AnimationTimer.getInstance();
+const canvasHelper = new CanvasHelper(settings);
+const gridHelper = new GridHelper(canvasHelper, settings);
 
-  constructor() {
-    this.animationID = 0;
-    this.canvasHelper = new CanvasHelper(settings);
-    this.canvasHelper.init();
+export function StartApp() {
+  canvasHelper.init();
+  gridHelper.init();
 
-    this.gridHelper = new GridHelper(this.canvasHelper, settings);
-    this.gridHelper.init();
-  }
+  onResize();
+  animationLoop(performance.now());
 
-  init() {
-    this.resize();
-    this.update();
+  addEventListener("resize", debounce(() => onResize(), 300));
+}
 
-    addEventListener("resize", debounce(() => this.resize(), 300));
-  }
+function onResize() {
+  canvasHelper.resize();
+  gridHelper.resize();
+}
 
-  resize() {
-    // cancelAnimationFrame(this.animationID);
-    this.canvasHelper.resize();
-    this.gridHelper.resize();
+function updateParticles() {
+  gridHelper.update();
+}
 
-    this.update();
-  }
+function renderParticles() {
+  gridHelper.draw();
+}
 
-  updateParticles() {
-    this.gridHelper.update();
-  }
+function animationLoop(timeStamp: DOMHighResTimeStamp) {
+  animationTimer.setTimestamp(timeStamp);
 
-  renderParticles() {
-    this.gridHelper.draw();
-  }
+  updateParticles();
+  renderParticles();
 
-  update() {
-    this.updateParticles();
-    this.renderParticles();
-    this.animationID = requestAnimationFrame(() => this.update());
-  }
+  requestAnimationFrame(animationLoop);
 }
 
 function debounce<F extends (...args: Parameters<F>) => ReturnType<F>>(

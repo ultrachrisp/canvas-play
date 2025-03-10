@@ -1,3 +1,5 @@
+import { AnimationTimer } from "./AnimationTimer";
+
 interface Particle {
   width: number;
   height: number;
@@ -6,6 +8,8 @@ interface Particle {
   CanvasContext: CanvasRenderingContext2D;
   offScreenCanvas: HTMLCanvasElement;
 }
+
+type AnimationState = "spin" | "fadeOut" | "fadeIn";
 
 export class ParticleHelper {
   width: number;
@@ -21,6 +25,8 @@ export class ParticleHelper {
   colour: number;
   canvasContext: CanvasRenderingContext2D;
   offScreenCanvas: HTMLCanvasElement;
+  state: AnimationState;
+  animationTimer: AnimationTimer;
 
   constructor(
     {
@@ -48,13 +54,31 @@ export class ParticleHelper {
     this.offScreenCanvas = offScreenCanvas;
     // temp, to check spritesheet is workingn
     this.colour = randomIntFromInterval(0, 5);
+    this.state = "spin";
+    this.animationTimer = AnimationTimer.getInstance();
   }
 
   init() {}
 
+  fadeIn() {}
+
+  fadeOut() {}
+
   update() {
-    this.angle = (this.angle > 360) ? 0 : this.angle + 0.5;
+    console.log("speed factor: ", this.animationTimer.getSpeedFactor());
+    this.angle = (this.angle > 360)
+      ? 0
+      : this.angle + this.animationTimer.getSpeedFactor();
     this.radians = this.angle * (Math.PI / 180);
+
+    // switch (this.state) {
+    //   case "fadeIn":
+    //     this.fadeIn();
+    //     break;
+    //   case "fadeOut":
+    //     this.fadeOut();
+    //     break;
+    // }
   }
 
   draw() {
