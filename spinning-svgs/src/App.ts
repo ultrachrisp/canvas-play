@@ -1,3 +1,4 @@
+import { AnimationTimer } from "./components/AnimationTimer";
 import { CanvasHelper } from "./components/CanvasHelper";
 import { GridHelper } from "./components/GridManager";
 import { GeneralSettings } from "./types.d";
@@ -17,6 +18,7 @@ export class App {
   gridHelper: GridHelper;
   animationID: number;
   startTime: number;
+  animationTimer: AnimationTimer;
 
   constructor() {
     this.animationID = 0;
@@ -27,11 +29,12 @@ export class App {
     this.gridHelper.init();
 
     this.startTime = -1;
+    this.animationTimer = AnimationTimer.getInstance();
   }
 
   init() {
     this.resize();
-    this.update();
+    this.update(performance.now());
 
     addEventListener("resize", debounce(() => this.resize(), 300));
   }
@@ -41,7 +44,7 @@ export class App {
     this.canvasHelper.resize();
     this.gridHelper.resize();
 
-    this.update();
+    this.update(performance.now());
   }
 
   updateParticles() {
@@ -52,14 +55,15 @@ export class App {
     this.gridHelper.draw();
   }
 
-  update(timeStamp = 0) {
-    if (this.startTime === -1) this.startTime = timeStamp;
-    this.gridHelper.currentTime = timeStamp - this.startTime;
+  update(timeStamp: DOMHighResTimeStamp) {
+    this.animationTimer.setTimestamp(timeStamp);
 
     this.updateParticles();
     this.renderParticles();
 
-    this.animationID = requestAnimationFrame(this.update);
+    this.animationID = requestAnimationFrame((timestamp) =>
+      this.update(timestamp)
+    );
   }
 }
 
