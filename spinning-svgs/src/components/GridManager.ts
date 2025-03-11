@@ -1,4 +1,3 @@
-import { debounce } from "../App";
 import { GeneralSettings } from "../types";
 import { CanvasHelper } from "./CanvasHelper";
 import { AnimationState, ParticleHelper } from "./Particle";

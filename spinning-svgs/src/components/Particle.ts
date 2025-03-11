@@ -1,4 +1,4 @@
-import { AnimationTimer } from "./AnimationTimer";
+import { getAnimationTimerInstance } from "./AnimationTimer";
 
 interface Particle {
   width: number;
@@ -11,6 +11,8 @@ interface Particle {
 }
 
 export type AnimationState = "spin" | "fadeOut" | "fadeIn" | "hover";
+
+const timer = getAnimationTimerInstance();
 
 export class ParticleHelper {
   width: number;
@@ -36,7 +38,6 @@ export class ParticleHelper {
 
   canvasContext: CanvasRenderingContext2D;
   offScreenCanvas: HTMLCanvasElement;
-  animationTimer: AnimationTimer;
 
   constructor(
     {
@@ -73,7 +74,6 @@ export class ParticleHelper {
 
     this.canvasContext = CanvasContext;
     this.offScreenCanvas = offScreenCanvas;
-    this.animationTimer = AnimationTimer.getInstance();
   }
 
   init() {}
@@ -115,7 +115,7 @@ export class ParticleHelper {
 
     this.angle = (this.angle > 360)
       ? 0
-      : this.angle + this.animationTimer.getSpeedFactor();
+      : this.angle + timer.getSpeedFactor();
     this.radians = this.angle * (Math.PI / 180);
 
     switch (this.state) {
