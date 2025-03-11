@@ -1,6 +1,7 @@
+import { debounce } from "../App";
 import { GeneralSettings } from "../types";
 import { CanvasHelper } from "./CanvasHelper";
-import { ParticleHelper } from "./Particle";
+import { AnimationState, ParticleHelper } from "./Particle";
 
 interface GridParams {
   canvasWidth: number;
@@ -47,22 +48,15 @@ export class GridHelper {
   }
 
   init() {
-    this.canvasHelper.canvas.addEventListener("click", (evt) => {
-      const [mouseX, mouseY] = getMouseCoordinates(evt, this.canvasHelper);
-      const clickedParticle = findParticle(
-        mouseX,
-        mouseY,
-        this.grid,
-        this.settings.svgWidth,
-      );
-      clickedParticle.state = "fadeOut";
-    }, false);
+    this.canvasHelper.canvas.addEventListener("click", (evt) => setTargetParticleState(evt, this.canvasHelper, this.grid, this.settings.svgWidth, "fadeOut"));
+
+    this.canvasHelper.canvas.addEventListener("mousemove", (evt: MouseEvent) => setTargetParticleState(evt, this.canvasHelper, this.grid, this.settings.svgWidth, "hover"));
   }
 
   loadSvg(settings: GeneralSettings, canvasHelper: CanvasHelper) {
     const { svg, svgQuery, colours } = settings;
 
-    let i = this.settings.colours.length;
+    let i = colours.length;
     while (i--) {
       const result = svg.replace(svgQuery, colours[i]);
       const uri = encodeURIComponent(result);
@@ -100,12 +94,9 @@ export class GridHelper {
   }
 
   update() {
-    let i = this.gridRows;
-    let j = this.gridColumns;
-    while (i--) {
-      if (j < 0) j = this.gridColumns;
-      while (j--) {
-        this.grid[i][j].update();
+    for (let row = 0; row < this.gridRows; row++) {
+      for (let col = 0; col < this.gridColumns; col++) {
+        this.grid[row][col].update();
       }
     }
   }
@@ -113,15 +104,23 @@ export class GridHelper {
   draw() {
     clearCanvas(this.canvasHelper);
 
-    let i = this.gridRows;
-    let j = this.gridColumns;
-    while (i--) {
-      if (j < 0) j = this.gridColumns;
-      while (j--) {
-        this.grid[i][j].draw();
+    for (let row = 0; row < this.gridRows; row++) {
+      for (let col = 0; col < this.gridColumns; col++) {
+        this.grid[row][col].draw();
       }
     }
   }
+}
+
+function setTargetParticleState(evt: MouseEvent, canvasHelper: CanvasHelper, grid: MatrixGrid, cellWidth: number, particleState: AnimationState) {
+  const [mouseX, mouseY] = getMouseCoordinates(evt, canvasHelper);
+  const clickedParticle = findParticle(
+    mouseX,
+    mouseY,
+    grid,
+    cellWidth,
+  );
+  clickedParticle.state = particleState;
 }
 
 function populateGrid(
@@ -132,18 +131,19 @@ function populateGrid(
 ) {
   let grid = new Array(rows);
 
-  for (let i = 0; i < rows; i++) {
-    grid[i] = new Array(columns);
-    for (let j = 0; j < columns; j++) {
+  for (let row = 0; row < rows; row++) {
+    grid[row] = new Array(columns);
+    for (let col = 0; col < columns; col++) {
       const particle = new ParticleHelper({
         width: settings.svgWidth,
         height: settings.svgWidth,
-        arrayPositionX: i,
-        arrayPositionY: j,
+        arrayPositionX: row,
+        arrayPositionY: col,
         CanvasContext: canvasHelper.context,
         offScreenCanvas: canvasHelper.offScreenSpriteCanvas,
+        numOfColours: settings.colours.length,
       });
-      grid[i][j] = particle;
+      grid[row][col] = particle;
     }
   }
 
@@ -166,7 +166,11 @@ function findParticle(
   const x = Math.floor(mouseX / svgWidth);
   const y = Math.floor(mouseY / svgWidth);
 
-  return grid[x][y];
+  // check for edge cases where co-ordinates are negative
+  const row = x > 0 ? x : 0;
+  const col = y > 0 ? y : 0;
+
+  return grid[row][col];
 }
 
 function clearCanvas(canvasHelper: CanvasHelper) {
