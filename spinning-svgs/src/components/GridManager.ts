@@ -47,9 +47,29 @@ export class GridHelper {
   }
 
   init() {
-    this.canvasHelper.canvas.addEventListener("click", (evt) => setTargetParticleState(evt, this.canvasHelper, this.grid, this.settings.svgWidth, "fadeOut"));
+    this.canvasHelper.canvas.addEventListener(
+      "click",
+      (evt) =>
+        setTargetParticleState(
+          evt,
+          this.canvasHelper,
+          this.grid,
+          this.settings.svgWidth,
+          "fadeOut",
+        ),
+    );
 
-    this.canvasHelper.canvas.addEventListener("mousemove", (evt: MouseEvent) => setTargetParticleState(evt, this.canvasHelper, this.grid, this.settings.svgWidth, "hover"));
+    this.canvasHelper.canvas.addEventListener(
+      "mousemove",
+      (evt: MouseEvent) =>
+        setTargetParticleState(
+          evt,
+          this.canvasHelper,
+          this.grid,
+          this.settings.svgWidth,
+          "hover",
+        ),
+    );
   }
 
   loadSvg(settings: GeneralSettings, canvasHelper: CanvasHelper) {
@@ -111,7 +131,13 @@ export class GridHelper {
   }
 }
 
-function setTargetParticleState(evt: MouseEvent, canvasHelper: CanvasHelper, grid: MatrixGrid, cellWidth: number, particleState: AnimationState) {
+function setTargetParticleState(
+  evt: MouseEvent,
+  canvasHelper: CanvasHelper,
+  grid: MatrixGrid,
+  cellWidth: number,
+  particleState: AnimationState,
+) {
   const [mouseX, mouseY] = getMouseCoordinates(evt, canvasHelper);
   const clickedParticle = findParticle(
     mouseX,
@@ -128,7 +154,7 @@ function populateGrid(
   settings: GeneralSettings,
   canvasHelper: CanvasHelper,
 ) {
-  let grid = new Array(rows);
+  const grid = new Array(rows);
 
   for (let row = 0; row < rows; row++) {
     grid[row] = new Array(columns);

@@ -19,7 +19,8 @@ function createAnimationTimer() {
   };
 }
 
-let animationTimerInstance: ReturnType<typeof createAnimationTimer> | null = null;
+let animationTimerInstance: ReturnType<typeof createAnimationTimer> | null =
+  null;
 
 export function getAnimationTimerInstance() {
   if (!animationTimerInstance) {

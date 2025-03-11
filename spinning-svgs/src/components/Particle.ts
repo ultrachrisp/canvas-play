@@ -96,7 +96,7 @@ export class ParticleHelper {
       if (this.variableWidth >= this.width) {
         this.variableWidth = this.width;
         this.bigger = false;
-        this.state = 'spin';
+        this.state = "spin";
       }
     }
 
@@ -109,13 +109,10 @@ export class ParticleHelper {
     this.colourChange = false;
 
     return ((this.colour + 1) >= this.numOfColours) ? 0 : (this.colour + 1);
-  };
+  }
 
   update() {
-
-    this.angle = (this.angle > 360)
-      ? 0
-      : this.angle + timer.getSpeedFactor();
+    this.angle = (this.angle > 360) ? 0 : this.angle + timer.getSpeedFactor();
     this.radians = this.angle * (Math.PI / 180);
 
     switch (this.state) {
@@ -129,7 +126,8 @@ export class ParticleHelper {
         this.hover();
         break;
       case "spin":
-      default: this.state = "spin";
+      default:
+        this.state = "spin";
     }
   }
 
@@ -150,9 +148,4 @@ export class ParticleHelper {
     );
     this.canvasContext.restore();
   }
-}
-
-// temp, to check spritesheet is working
-function randomIntFromInterval(min: number, max: number) { // min and max included
-  return Math.floor(Math.random() * (max - min + 1) + min);
 }
