@@ -1,5 +1,10 @@
 import { GeneralSettings } from "../types";
 
+type CanvasType = {
+  canvas: HTMLCanvasElement;
+  context: CanvasRenderingContext2D;
+};
+
 export class CanvasHelper {
   settings: GeneralSettings;
   element: Element;
@@ -18,25 +23,21 @@ export class CanvasHelper {
       );
     }
 
-    emptyElement(element);
+    element.replaceChildren();
     this.element = element;
 
-    [this.canvas, this.context] = create2dCanvas();
+    let { canvas, context } = create2dCanvas();
+    this.canvas = canvas;
+    this.context = context;
     this.element.appendChild(this.canvas);
 
-    [this.offScreenSpriteCanvas, this.offScreenSpriteContext] =
-      create2dCanvas();
+    ({ canvas, context } = create2dCanvas());
+    this.offScreenSpriteCanvas = canvas;
+    this.offScreenSpriteContext = context;
 
-    // creating a single canvas for all the colours
     this.offScreenSpriteCanvas.width = this.settings.colours.length *
       this.settings.svgWidth;
     this.offScreenSpriteCanvas.height = this.settings.svgWidth;
-    // this.element.appendChild(this.offScreenSpriteCanvas);
-
-    // this.selectedParticle = {
-    //   positionX: -1,
-    //   positionY: -1
-    // }
   }
 
   init() {
@@ -44,23 +45,31 @@ export class CanvasHelper {
   }
 
   resize() {
-    [this.canvas.width, this.canvas.height] = getAvailableSpace(
+    const { canvasWidth, canvasHeight } = getAvailableSpace(
       this.element,
       this.settings.svgWidth,
     );
+
+    this.canvas.width = canvasWidth;
+    this.canvas.height = canvasHeight;
   }
 }
 
-function emptyElement(element: Element) {
-  element.replaceChildren();
+export function clearCanvas({ canvas, context }: CanvasType) {
+  return context.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height,
+  );
 }
 
-function create2dCanvas(): [HTMLCanvasElement, CanvasRenderingContext2D] {
+function create2dCanvas() {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
   if (!context) throw new Error("Failed to get 2D canvas context");
 
-  return [canvas, context];
+  return { canvas, context };
 }
 
 function getAvailableSpace(element: Element, cellWidth: number) {
@@ -70,9 +79,5 @@ function getAvailableSpace(element: Element, cellWidth: number) {
   const canvasHeight = Math.floor(height / cellWidth) *
     cellWidth;
 
-  /** Usful to keep a square shape*/
-  // const possibleHeight = window.innerHeight - (boundingRect.top * 2);
-  // const canvasHeight = (canvasWidth > possibleHeight) ? possibleHeight : canvasWidth;
-
-  return [canvasWidth, canvasHeight];
+  return { canvasWidth, canvasHeight };
 }

@@ -1,4 +1,4 @@
-import { AnimationTimer } from "./AnimationTimer";
+import { getAnimationTimerInstance } from "./AnimationTimer";
 
 interface Particle {
   width: number;
@@ -7,26 +7,37 @@ interface Particle {
   arrayPositionY: number;
   CanvasContext: CanvasRenderingContext2D;
   offScreenCanvas: HTMLCanvasElement;
+  numOfColours: number;
 }
 
-type AnimationState = "spin" | "fadeOut" | "fadeIn";
+export type AnimationState = "spin" | "fadeOut" | "fadeIn" | "hover";
+
+const timer = getAnimationTimerInstance();
 
 export class ParticleHelper {
   width: number;
   height: number;
   arrayPositionX: number;
   arrayPositionY: number;
+
+  variableWidth: number;
+  variableCenter: number;
+
+  angle: number;
+  radians: number;
   centerX: number;
   centerY: number;
   translateX: number;
   translateY: number;
-  angle: number;
-  radians: number;
+
   colour: number;
+  numOfColours: number;
+  colourChange: boolean;
+  bigger: boolean;
+  state: AnimationState;
+
   canvasContext: CanvasRenderingContext2D;
   offScreenCanvas: HTMLCanvasElement;
-  state: AnimationState;
-  animationTimer: AnimationTimer;
 
   constructor(
     {
@@ -36,6 +47,7 @@ export class ParticleHelper {
       arrayPositionY,
       CanvasContext,
       offScreenCanvas,
+      numOfColours,
     }: Particle,
   ) {
     this.width = width;
@@ -43,19 +55,25 @@ export class ParticleHelper {
     this.arrayPositionX = arrayPositionX;
     this.arrayPositionY = arrayPositionY;
 
+    this.variableWidth = width;
+    this.variableCenter = this.width / 2;
+
     this.angle = 0;
     this.radians = 0;
     this.centerX = this.width / 2;
     this.centerY = this.height / 2;
     this.translateX = (this.arrayPositionX * this.width) + this.centerX;
-    this.translateY = (this.arrayPositionY * this.height) + this.centerY;
+    this.translateY = (this.arrayPositionY * this.width) + this.centerY;
+
+    // temp, to check spritesheet is workingn
+    this.colour = 0; //randomIntFromInterval(0, 5);
+    this.numOfColours = numOfColours;
+    this.colourChange = false;
+    this.bigger = false;
+    this.state = "spin";
 
     this.canvasContext = CanvasContext;
     this.offScreenCanvas = offScreenCanvas;
-    // temp, to check spritesheet is workingn
-    this.colour = randomIntFromInterval(0, 5);
-    this.state = "spin";
-    this.animationTimer = AnimationTimer.getInstance();
   }
 
   init() {}
@@ -64,21 +82,53 @@ export class ParticleHelper {
 
   fadeOut() {}
 
+  hover() {
+    if (!this.bigger) {
+      this.variableWidth = this.variableWidth * 0.95;
+      if (this.variableWidth < 20) {
+        this.bigger = true;
+        this.colourChange = true;
+      }
+    } else if (this.bigger) {
+      this.variableWidth = this.variableWidth * 1.05;
+      this.colour = this.getHoverColour();
+
+      if (this.variableWidth >= this.width) {
+        this.variableWidth = this.width;
+        this.bigger = false;
+        this.state = "spin";
+      }
+    }
+
+    this.variableCenter = this.variableWidth / 2;
+    // this.variableHeight = this.variable / 2;
+  }
+
+  getHoverColour() {
+    if (!this.colourChange) return this.colour;
+    this.colourChange = false;
+
+    return ((this.colour + 1) >= this.numOfColours) ? 0 : (this.colour + 1);
+  }
+
   update() {
-    console.log("speed factor: ", this.animationTimer.getSpeedFactor());
-    this.angle = (this.angle > 360)
-      ? 0
-      : this.angle + this.animationTimer.getSpeedFactor();
+    this.angle = (this.angle > 360) ? 0 : this.angle + timer.getSpeedFactor();
     this.radians = this.angle * (Math.PI / 180);
 
-    // switch (this.state) {
-    //   case "fadeIn":
-    //     this.fadeIn();
-    //     break;
-    //   case "fadeOut":
-    //     this.fadeOut();
-    //     break;
-    // }
+    switch (this.state) {
+      case "fadeIn":
+        this.fadeIn();
+        break;
+      case "fadeOut":
+        this.fadeOut();
+        break;
+      case "hover":
+        this.hover();
+        break;
+      case "spin":
+      default:
+        this.state = "spin";
+    }
   }
 
   draw() {
@@ -91,16 +141,11 @@ export class ParticleHelper {
       0,
       this.width,
       this.height,
-      -this.centerX,
-      -this.centerY,
-      this.width,
-      this.height,
+      -this.variableCenter,
+      -this.variableCenter,
+      this.variableWidth,
+      this.variableWidth,
     );
     this.canvasContext.restore();
   }
-}
-
-// temp, to check spritesheet is working
-function randomIntFromInterval(min: number, max: number) { // min and max included
-  return Math.floor(Math.random() * (max - min + 1) + min);
 }

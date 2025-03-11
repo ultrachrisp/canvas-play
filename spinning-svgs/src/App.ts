@@ -1,4 +1,4 @@
-import { AnimationTimer } from "./components/AnimationTimer";
+import { getAnimationTimerInstance } from "./components/AnimationTimer";
 import { CanvasHelper } from "./components/CanvasHelper";
 import { GridHelper } from "./components/GridManager";
 import { GeneralSettings } from "./types.d";
@@ -13,7 +13,7 @@ const settings: GeneralSettings = {
   colours: ["#000000", "#73505d", "#615b8f", "#5c7364", "#736d5c", "#ada555"],
 };
 
-const animationTimer = AnimationTimer.getInstance();
+const animationTimer = getAnimationTimerInstance();
 const canvasHelper = new CanvasHelper(settings);
 const gridHelper = new GridHelper(canvasHelper, settings);
 
