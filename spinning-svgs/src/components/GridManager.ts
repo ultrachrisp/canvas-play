@@ -2,13 +2,6 @@ import { GeneralSettings } from "../types";
 import { CanvasHelper, clearCanvas } from "./CanvasHelper";
 import { AnimationState, ParticleHelper } from "./Particle";
 
-interface GridParams {
-  canvasWidth: number;
-  canvasHeight: number;
-  particleWidth: number;
-  particleHeight: number;
-}
-
 type MatrixGrid = Array<Array<ParticleHelper>>;
 
 export class GridHelper {
@@ -29,8 +22,7 @@ export class GridHelper {
     const { rows, columns } = calculateGrid({
       canvasWidth: this.canvasHelper.canvas.width,
       canvasHeight: this.canvasHelper.canvas.height,
-      particleWidth: this.settings.svgWidth,
-      particleHeight: this.settings.svgWidth,
+      cellWidth: this.settings.svgWidth,
     });
 
     this.gridRows = rows;
@@ -98,8 +90,7 @@ export class GridHelper {
     const { rows, columns } = calculateGrid({
       canvasWidth: this.canvasHelper.canvas.width,
       canvasHeight: this.canvasHelper.canvas.height,
-      particleWidth: this.settings.svgWidth,
-      particleHeight: this.settings.svgWidth,
+      cellWidth: this.settings.svgWidth,
     });
     this.gridRows = rows;
     this.gridColumns = columns;
@@ -136,14 +127,16 @@ function setTargetParticleState(
   cellWidth: number,
   particleState: AnimationState,
 ) {
-  const [mouseX, mouseY] = getMouseCoordinates(evt, canvasHelper);
-  const clickedParticle = findParticle(
+  const { mouseX, mouseY } = getRelativeMousePostion({
+    evt,
+    canvas: canvasHelper.canvas,
+  });
+  const { row, column } = getMouseToGridPosition({
     mouseX,
     mouseY,
-    grid,
     cellWidth,
-  );
-  clickedParticle.state = particleState;
+  });
+  grid[row][column].state = particleState;
 }
 
 function populateGrid(
@@ -173,34 +166,39 @@ function populateGrid(
   return grid;
 }
 
-function getMouseCoordinates(evt: MouseEvent, canvasHelper: CanvasHelper) {
-  const boundingRect = canvasHelper.canvas.getBoundingClientRect();
-  const mouseX = evt.clientX - boundingRect.left;
-  const mouseY = evt.clientY - boundingRect.top;
-  return [mouseX, mouseY];
+function getRelativeMousePostion(
+  { evt, canvas }: { evt: MouseEvent; canvas: HTMLCanvasElement },
+) {
+  const { left, top } = canvas.getBoundingClientRect();
+  const mouseX = evt.clientX - left;
+  const mouseY = evt.clientY - top;
+  return { mouseX, mouseY };
 }
 
-function findParticle(
-  mouseX: number,
-  mouseY: number,
-  grid: MatrixGrid,
-  svgWidth: number,
-): ParticleHelper {
-  const x = Math.floor(mouseX / svgWidth);
-  const y = Math.floor(mouseY / svgWidth);
+function getMouseToGridPosition({ mouseX, mouseY, cellWidth }: {
+  mouseX: number;
+  mouseY: number;
+  cellWidth: number;
+}) {
+  const x = Math.floor(mouseX / cellWidth);
+  const y = Math.floor(mouseY / cellWidth);
 
   // check for edge cases where co-ordinates are negative
   const row = x > 0 ? x : 0;
-  const col = y > 0 ? y : 0;
+  const column = y > 0 ? y : 0;
 
-  return grid[row][col];
+  return { row, column };
 }
 
 function calculateGrid(
-  { canvasWidth, canvasHeight, particleWidth, particleHeight }: GridParams,
+  { canvasWidth, canvasHeight, cellWidth }: {
+    canvasWidth: number;
+    canvasHeight: number;
+    cellWidth: number;
+  },
 ) {
-  const rows = Math.floor(canvasWidth / particleWidth);
-  const columns = Math.floor(canvasHeight / particleHeight);
+  const rows = Math.floor(canvasWidth / cellWidth);
+  const columns = Math.floor(canvasHeight / cellWidth);
 
   return { rows, columns };
 }
