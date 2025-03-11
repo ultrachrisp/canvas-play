@@ -1,5 +1,5 @@
 import { GeneralSettings } from "../types";
-import { CanvasHelper } from "./CanvasHelper";
+import { CanvasHelper, clearCanvas } from "./CanvasHelper";
 import { AnimationState, ParticleHelper } from "./Particle";
 
 interface GridParams {
@@ -8,11 +8,6 @@ interface GridParams {
   particleWidth: number;
   particleHeight: number;
 }
-
-// type SelectedParticle = {
-//   positionX: number;
-//   positionY: number
-// }
 
 type MatrixGrid = Array<Array<ParticleHelper>>;
 
@@ -31,7 +26,7 @@ export class GridHelper {
     this.settings = settings;
     this.canvasHelper = canvasHelper;
 
-    const [rows, columns] = calculateGrid({
+    const { rows, columns } = calculateGrid({
       canvasWidth: this.canvasHelper.canvas.width,
       canvasHeight: this.canvasHelper.canvas.height,
       particleWidth: this.settings.svgWidth,
@@ -100,7 +95,7 @@ export class GridHelper {
   resize() {
     clearCanvas(this.canvasHelper);
 
-    const [rows, columns] = calculateGrid({
+    const { rows, columns } = calculateGrid({
       canvasWidth: this.canvasHelper.canvas.width,
       canvasHeight: this.canvasHelper.canvas.height,
       particleWidth: this.settings.svgWidth,
@@ -121,7 +116,10 @@ export class GridHelper {
   }
 
   draw() {
-    clearCanvas(this.canvasHelper);
+    clearCanvas({
+      canvas: this.canvasHelper.canvas,
+      context: this.canvasHelper.context,
+    });
 
     for (let row = 0; row < this.gridRows; row++) {
       for (let col = 0; col < this.gridColumns; col++) {
@@ -198,20 +196,11 @@ function findParticle(
   return grid[row][col];
 }
 
-function clearCanvas(canvasHelper: CanvasHelper) {
-  return canvasHelper.context.clearRect(
-    0,
-    0,
-    canvasHelper.canvas.width,
-    canvasHelper.canvas.height,
-  );
-}
-
 function calculateGrid(
   { canvasWidth, canvasHeight, particleWidth, particleHeight }: GridParams,
 ) {
   const rows = Math.floor(canvasWidth / particleWidth);
   const columns = Math.floor(canvasHeight / particleHeight);
 
-  return [rows, columns];
+  return { rows, columns };
 }
