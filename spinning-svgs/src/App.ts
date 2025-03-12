@@ -1,12 +1,12 @@
-import { AnimationTimer } from "./components/AnimationTimer";
-import { CanvasManager } from "./components/CanvasManager";
+import { AnimationTimer } from "./lib/AnimationTimer";
+import { CanvasManager } from "./lib/CanvasManager";
 import {
   getMouseToGridPosition,
   getRelativeMousePostion,
   GridManager,
   MatrixGrid,
-} from "./components/GridManager";
-import { AnimationState } from "./components/Particle";
+} from "./lib/GridManager";
+import { AnimationState } from "./lib/Particle";
 import { GeneralSettings } from "./types.d";
 
 const settings: GeneralSettings = {

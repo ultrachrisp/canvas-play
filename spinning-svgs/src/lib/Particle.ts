@@ -19,6 +19,7 @@ export class ParticleHelper {
 
   angle: number;
   radians: number;
+  radiansConversion: number;
   centerX: number;
   centerY: number;
   translateX: number;
@@ -49,13 +50,13 @@ export class ParticleHelper {
 
     this.angle = 0;
     this.radians = 0;
+    this.radiansConversion = (Math.PI / 180);
     this.centerX = this.width / 2;
     this.centerY = this.height / 2;
     this.translateX = (this.arrayPositionX * this.width) + this.centerX;
     this.translateY = (this.arrayPositionY * this.width) + this.centerY;
 
-    // temp, to check spritesheet is workingn
-    this.colour = 0; //randomIntFromInterval(0, 5);
+    this.colour = 0;
     this.numOfColours = numOfColours;
     this.colourChange = false;
     this.bigger = false;
@@ -70,13 +71,13 @@ export class ParticleHelper {
 
   hover() {
     if (!this.bigger) {
-      this.variableWidth = this.variableWidth * 0.95;
-      if (this.variableWidth < 20) {
+      this.variableWidth *= 0.95;
+      if (this.variableWidth < 15) {
         this.bigger = true;
         this.colourChange = true;
       }
-    } else if (this.bigger) {
-      this.variableWidth = this.variableWidth * 1.05;
+    } else {
+      this.variableWidth *= 1.05;
       this.colour = this.getHoverColour();
 
       if (this.variableWidth >= this.width) {
@@ -93,12 +94,12 @@ export class ParticleHelper {
     if (!this.colourChange) return this.colour;
     this.colourChange = false;
 
-    return ((this.colour + 1) >= this.numOfColours) ? 0 : (this.colour + 1);
+    return (this.colour >= this.numOfColours - 1) ? 0 : (this.colour + 1);
   }
 
   update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
     this.angle = (this.angle > 360) ? 0 : this.angle + speedFactor;
-    this.radians = this.angle * (Math.PI / 180);
+    this.radians = this.angle * this.radiansConversion;
 
     switch (this.state) {
       case "fadeIn":
