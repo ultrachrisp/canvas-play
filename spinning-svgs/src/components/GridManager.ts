@@ -1,19 +1,19 @@
 import { GeneralSettings } from "../types";
-import { CanvasHelper, clearCanvas } from "./CanvasHelper";
+import { CanvasManager, clearCanvas } from "./CanvasManager";
 import { AnimationState, ParticleHelper } from "./Particle";
 
 type MatrixGrid = Array<Array<ParticleHelper>>;
 
-export class GridHelper {
+export class GridManager {
   grid: MatrixGrid;
   gridRows: number;
   gridColumns: number;
   settings: GeneralSettings;
-  canvasHelper: CanvasHelper;
+  canvasHelper: CanvasManager;
   spriteCanvas: HTMLCanvasElement;
 
   constructor(
-    canvasHelper: CanvasHelper,
+    canvasHelper: CanvasManager,
     settings: GeneralSettings,
   ) {
     this.settings = settings;
@@ -59,7 +59,7 @@ export class GridHelper {
     );
   }
 
-  loadSvg(settings: GeneralSettings, canvasHelper: CanvasHelper) {
+  loadSvg(settings: GeneralSettings, canvasHelper: CanvasManager) {
     const { svg, svgQuery, colours } = settings;
 
     let i = colours.length;
@@ -122,7 +122,7 @@ export class GridHelper {
 
 function setTargetParticleState(
   evt: MouseEvent,
-  canvasHelper: CanvasHelper,
+  canvasHelper: CanvasManager,
   grid: MatrixGrid,
   cellWidth: number,
   particleState: AnimationState,
@@ -136,6 +136,7 @@ function setTargetParticleState(
     mouseY,
     cellWidth,
   });
+
   grid[row][column].state = particleState;
 }
 
@@ -143,7 +144,7 @@ function populateGrid(
   rows: number,
   columns: number,
   settings: GeneralSettings,
-  canvasHelper: CanvasHelper,
+  canvasHelper: CanvasManager,
 ) {
   const grid = new Array(rows);
 
@@ -172,6 +173,7 @@ function getRelativeMousePostion(
   const { left, top } = canvas.getBoundingClientRect();
   const mouseX = evt.clientX - left;
   const mouseY = evt.clientY - top;
+
   return { mouseX, mouseY };
 }
 

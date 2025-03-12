@@ -5,7 +5,7 @@ type CanvasType = {
   context: CanvasRenderingContext2D;
 };
 
-export class CanvasHelper {
+export class CanvasManager {
   settings: GeneralSettings;
   element: Element;
   canvas: HTMLCanvasElement;

@@ -1,6 +1,6 @@
 import { getAnimationTimerInstance } from "./components/AnimationTimer";
-import { CanvasHelper } from "./components/CanvasHelper";
-import { GridHelper } from "./components/GridManager";
+import { CanvasManager } from "./components/CanvasManager";
+import { GridManager } from "./components/GridManager";
 import { GeneralSettings } from "./types.d";
 
 const settings: GeneralSettings = {
@@ -14,12 +14,12 @@ const settings: GeneralSettings = {
 };
 
 const animationTimer = getAnimationTimerInstance();
-const canvasHelper = new CanvasHelper(settings);
-const gridHelper = new GridHelper(canvasHelper, settings);
+const canvasManager = new CanvasManager(settings);
+const gridManager = new GridManager(canvasManager, settings);
 
 export function StartApp() {
-  canvasHelper.init();
-  gridHelper.init();
+  canvasManager.init();
+  gridManager.init();
 
   onResize();
   animationLoop(performance.now());
@@ -28,16 +28,16 @@ export function StartApp() {
 }
 
 function onResize() {
-  canvasHelper.resize();
-  gridHelper.resize();
+  canvasManager.resize();
+  gridManager.resize();
 }
 
 function updateParticles() {
-  gridHelper.update();
+  gridManager.update();
 }
 
 function renderParticles() {
-  gridHelper.draw();
+  gridManager.draw();
 }
 
 function animationLoop(timeStamp: DOMHighResTimeStamp) {
