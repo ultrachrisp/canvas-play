@@ -1,4 +1,4 @@
-import { getAnimationTimerInstance } from "./components/AnimationTimer";
+import { AnimationTimer } from "./components/AnimationTimer";
 import { CanvasManager } from "./components/CanvasManager";
 import {
   getMouseToGridPosition,
@@ -19,16 +19,11 @@ const settings: GeneralSettings = {
   colours: ["#000000", "#73505d", "#615b8f", "#5c7364", "#736d5c", "#ada555"],
 };
 
-const animationTimer = getAnimationTimerInstance();
-const canvasManager = new CanvasManager(settings);
-const gridManager = new GridManager({ settings, canvasManager });
-
 export function StartApp() {
-  canvasManager.init();
-  gridManager.init();
-
-  onResize();
-
+  const animationTimer = AnimationTimer();
+  const canvasManager = new CanvasManager(settings);
+  const { canvasWidth, canvasHeight } = canvasManager.resize();
+  const gridManager = new GridManager({ settings, canvasWidth, canvasHeight });
 
   addEventListener("resize", debounce(() => onResize(), 300));
   canvasManager.getCanvas().addEventListener(
@@ -36,7 +31,7 @@ export function StartApp() {
     (evt) =>
       setTargetParticleState(
         evt,
-        canvasManager,
+        canvasManager.getCanvas(),
         gridManager.getGrid(),
         settings.svgWidth,
         "fadeOut",
@@ -48,26 +43,53 @@ export function StartApp() {
     (evt: MouseEvent) =>
       setTargetParticleState(
         evt,
-        canvasManager,
+        canvasManager.getCanvas(),
         gridManager.getGrid(),
         settings.svgWidth,
         "hover",
       ),
   );
 
+  function onResize() {
+    const { canvasWidth, canvasHeight } = canvasManager.resize();
+    gridManager.resize({ canvasWidth, canvasHeight });
+  }
+
+  function updateParticles() {
+    gridManager.update({ speedFactor: animationTimer.getSpeedFactor() });
+  }
+
+  function renderParticles() {
+    canvasManager.draw();
+    gridManager.draw({
+      context: canvasManager.getContext(),
+      spriteSheet: canvasManager.getOffscreenCanvas(),
+    });
+  }
+
+  function animationLoop(timeStamp: DOMHighResTimeStamp) {
+    animationTimer.setTimestamp(timeStamp);
+
+    updateParticles();
+    renderParticles();
+
+    requestAnimationFrame(animationLoop);
+  }
+
+  onResize();
   animationLoop(performance.now());
 }
 
 function setTargetParticleState(
   evt: MouseEvent,
-  canvasHelper: CanvasManager,
+  canvas: HTMLCanvasElement,
   grid: MatrixGrid,
   cellWidth: number,
   particleState: AnimationState,
 ) {
   const { mouseX, mouseY } = getRelativeMousePostion({
     evt,
-    canvas: canvasHelper.getCanvas(),
+    canvas,
   });
   const { row, column } = getMouseToGridPosition({
     mouseX,
@@ -76,32 +98,6 @@ function setTargetParticleState(
   });
 
   grid[row][column].state = particleState;
-}
-
-function onResize() {
-  const { canvasWidth, canvasHeight } = canvasManager.resize();
-  gridManager.resize({ canvasWidth, canvasHeight });
-}
-
-function updateParticles() {
-  gridManager.update();
-}
-
-function renderParticles() {
-  canvasManager.draw();
-  gridManager.draw({
-    context: canvasManager.getContext(),
-    spriteSheet: canvasManager.getOffscreenCanvas(),
-  });
-}
-
-function animationLoop(timeStamp: DOMHighResTimeStamp) {
-  animationTimer.setTimestamp(timeStamp);
-
-  updateParticles();
-  renderParticles();
-
-  requestAnimationFrame(animationLoop);
 }
 
 function debounce<F extends (...args: Parameters<F>) => ReturnType<F>>(

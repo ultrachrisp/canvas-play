@@ -1,5 +1,3 @@
-import { getAnimationTimerInstance } from "./AnimationTimer";
-
 interface Particle {
   width: number;
   height: number;
@@ -9,8 +7,6 @@ interface Particle {
 }
 
 export type AnimationState = "spin" | "fadeOut" | "fadeIn" | "hover";
-
-const timer = getAnimationTimerInstance();
 
 export class ParticleHelper {
   width: number;
@@ -91,7 +87,6 @@ export class ParticleHelper {
     }
 
     this.variableCenter = this.variableWidth / 2;
-    // this.variableHeight = this.variable / 2;
   }
 
   getHoverColour() {
@@ -101,8 +96,8 @@ export class ParticleHelper {
     return ((this.colour + 1) >= this.numOfColours) ? 0 : (this.colour + 1);
   }
 
-  update() {
-    this.angle = (this.angle > 360) ? 0 : this.angle + timer.getSpeedFactor();
+  update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
+    this.angle = (this.angle > 360) ? 0 : this.angle + speedFactor;
     this.radians = this.angle * (Math.PI / 180);
 
     switch (this.state) {

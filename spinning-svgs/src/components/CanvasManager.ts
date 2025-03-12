@@ -36,12 +36,9 @@ export class CanvasManager {
     this.offScreenSpriteCanvas.width = settings.colours.length *
       settings.svgWidth;
     this.offScreenSpriteCanvas.height = settings.svgWidth;
-    this.offScreenSpriteCanvas = this.loadSvg(settings);
+    loadSvg({ settings, spriteContext: this.offScreenSpriteContext });
 
     this.cellWidth = settings.svgWidth;
-  }
-
-  init() {
     this.resize();
   }
 
@@ -81,34 +78,37 @@ export class CanvasManager {
   draw() {
     clearCanvas({ canvas: this.canvas, context: this.context });
   }
+}
 
-  loadSvg(settings: GeneralSettings) {
-    const { svg, svgQuery, colours } = settings;
+function loadSvg(
+  { settings, spriteContext }: {
+    settings: GeneralSettings;
+    spriteContext: CanvasRenderingContext2D;
+  },
+) {
+  const { svg, svgQuery, colours } = settings;
 
-    let i = colours.length;
-    while (i--) {
-      const result = svg.replace(svgQuery, colours[i]);
-      const uri = encodeURIComponent(result);
-      const img = new Image();
-      const xOffset = i * settings.svgWidth;
+  let i = colours.length;
+  while (i--) {
+    const result = svg.replace(svgQuery, colours[i]);
+    const uri = encodeURIComponent(result);
+    const img = new Image();
+    const xOffset = i * settings.svgWidth;
 
-      img.onload = () => {
-        this.offScreenSpriteContext.drawImage(
-          img,
-          xOffset,
-          0,
-          settings.svgWidth,
-          settings.svgWidth,
-        );
-      };
-      img.src = `data:image/svg+xml,${uri}`;
-    }
-
-    return this.offScreenSpriteCanvas;
+    img.onload = () => {
+      spriteContext.drawImage(
+        img,
+        xOffset,
+        0,
+        settings.svgWidth,
+        settings.svgWidth,
+      );
+    };
+    img.src = `data:image/svg+xml,${uri}`;
   }
 }
 
-export function clearCanvas({ canvas, context }: CanvasType) {
+function clearCanvas({ canvas, context }: CanvasType) {
   return context.clearRect(
     0,
     0,

@@ -1,4 +1,4 @@
-function createAnimationTimer() {
+export function AnimationTimer() {
   const fps: number = 60 / 1000;
   let speedFactor: number = -1;
   let lastTimestamp: DOMHighResTimeStamp = -1;
@@ -17,15 +17,4 @@ function createAnimationTimer() {
     setTimestamp,
     getSpeedFactor,
   };
-}
-
-let animationTimerInstance: ReturnType<typeof createAnimationTimer> | null =
-  null;
-
-export function getAnimationTimerInstance() {
-  if (!animationTimerInstance) {
-    animationTimerInstance = createAnimationTimer();
-  }
-
-  return animationTimerInstance;
 }

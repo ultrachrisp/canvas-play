@@ -1,12 +1,7 @@
 import { GeneralSettings } from "../types";
-import { CanvasManager } from "./CanvasManager";
 import { ParticleHelper } from "./Particle";
 
 export type MatrixGrid = Array<Array<ParticleHelper>>;
-export type CanvasDimensions = {
-  canvasWidth: number;
-  canvasHeight: number;
-};
 
 export class GridManager {
   protected grid: MatrixGrid;
@@ -15,17 +10,18 @@ export class GridManager {
   protected cellWidth: number;
   protected numOfSprites: number;
 
-  constructor({ settings, canvasManager }: {
+  constructor({ settings, canvasWidth, canvasHeight }: {
     settings: GeneralSettings;
-    canvasManager: CanvasManager;
+    canvasWidth: number;
+    canvasHeight: number;
   }) {
     this.cellWidth = settings.svgWidth;
     this.numOfSprites = settings.colours.length;
 
     const { rows, columns } = calculateGrid({
-      canvasWidth: canvasManager.getCanvas().width,
-      canvasHeight: canvasManager.getCanvas().height,
-      cellWidth: this.cellWidth,
+      canvasWidth,
+      canvasHeight,
+      cellWidth: settings.svgWidth,
     });
 
     this.gridRows = rows;
@@ -39,18 +35,20 @@ export class GridManager {
     });
   }
 
-  init() {}
-
   getGrid() {
     return this.grid;
   }
 
-  resize({ canvasWidth, canvasHeight }: CanvasDimensions) {
+  resize({ canvasWidth, canvasHeight }: {
+    canvasWidth: number;
+    canvasHeight: number;
+  }) {
     const { rows, columns } = calculateGrid({
       canvasWidth,
       canvasHeight,
       cellWidth: this.cellWidth,
     });
+
     this.gridRows = rows;
     this.gridColumns = columns;
 
@@ -62,10 +60,10 @@ export class GridManager {
     });
   }
 
-  update() {
+  update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
     for (let row = 0; row < this.gridRows; row++) {
       for (let col = 0; col < this.gridColumns; col++) {
-        this.grid[row][col].update();
+        this.grid[row][col].update({ speedFactor });
       }
     }
   }
