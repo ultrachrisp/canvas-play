@@ -6,17 +6,15 @@ type CanvasType = {
 };
 
 export class CanvasManager {
-  settings: GeneralSettings;
-  element: Element;
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
-  offScreenSpriteCanvas: HTMLCanvasElement;
-  offScreenSpriteContext: CanvasRenderingContext2D;
+  protected element: Element;
+  protected canvas: HTMLCanvasElement;
+  protected context: CanvasRenderingContext2D;
+  protected offScreenSpriteCanvas: HTMLCanvasElement;
+  protected offScreenSpriteContext: CanvasRenderingContext2D;
+  protected cellWidth: number;
 
   constructor(settings: GeneralSettings) {
-    this.settings = settings;
-
-    const element = document.querySelector(this.settings.tag);
+    const element = document.querySelector(settings.tag);
     if (!element) {
       throw new Error(
         "Provided canvas tag does not exist in the HTML document",
@@ -35,23 +33,78 @@ export class CanvasManager {
     this.offScreenSpriteCanvas = canvas;
     this.offScreenSpriteContext = context;
 
-    this.offScreenSpriteCanvas.width = this.settings.colours.length *
-      this.settings.svgWidth;
-    this.offScreenSpriteCanvas.height = this.settings.svgWidth;
+    this.offScreenSpriteCanvas.width = settings.colours.length *
+      settings.svgWidth;
+    this.offScreenSpriteCanvas.height = settings.svgWidth;
+    this.offScreenSpriteCanvas = this.loadSvg(settings);
+
+    this.cellWidth = settings.svgWidth;
   }
 
   init() {
     this.resize();
   }
 
+  getCanvasAndContext(): CanvasType {
+    return { canvas: this.canvas, context: this.context };
+  }
+
+  getContext() {
+    return this.context;
+  }
+
+  getCanvas() {
+    return this.canvas;
+  }
+
+  getOffscreenContext() {
+    return this.offScreenSpriteContext;
+  }
+
+  getOffscreenCanvas() {
+    return this.offScreenSpriteCanvas;
+  }
+
   resize() {
+    clearCanvas({ canvas: this.canvas, context: this.context });
     const { canvasWidth, canvasHeight } = getAvailableSpace(
       this.element,
-      this.settings.svgWidth,
+      this.cellWidth,
     );
 
     this.canvas.width = canvasWidth;
     this.canvas.height = canvasHeight;
+
+    return { canvasWidth, canvasHeight };
+  }
+
+  draw() {
+    clearCanvas({ canvas: this.canvas, context: this.context });
+  }
+
+  loadSvg(settings: GeneralSettings) {
+    const { svg, svgQuery, colours } = settings;
+
+    let i = colours.length;
+    while (i--) {
+      const result = svg.replace(svgQuery, colours[i]);
+      const uri = encodeURIComponent(result);
+      const img = new Image();
+      const xOffset = i * settings.svgWidth;
+
+      img.onload = () => {
+        this.offScreenSpriteContext.drawImage(
+          img,
+          xOffset,
+          0,
+          settings.svgWidth,
+          settings.svgWidth,
+        );
+      };
+      img.src = `data:image/svg+xml,${uri}`;
+    }
+
+    return this.offScreenSpriteCanvas;
   }
 }
 
@@ -64,7 +117,7 @@ export function clearCanvas({ canvas, context }: CanvasType) {
   );
 }
 
-function create2dCanvas() {
+function create2dCanvas(): CanvasType {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
   if (!context) throw new Error("Failed to get 2D canvas context");

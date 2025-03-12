@@ -1,6 +1,12 @@
 import { getAnimationTimerInstance } from "./components/AnimationTimer";
 import { CanvasManager } from "./components/CanvasManager";
-import { GridManager } from "./components/GridManager";
+import {
+  getMouseToGridPosition,
+  getRelativeMousePostion,
+  GridManager,
+  MatrixGrid,
+} from "./components/GridManager";
+import { AnimationState } from "./components/Particle";
 import { GeneralSettings } from "./types.d";
 
 const settings: GeneralSettings = {
@@ -15,21 +21,66 @@ const settings: GeneralSettings = {
 
 const animationTimer = getAnimationTimerInstance();
 const canvasManager = new CanvasManager(settings);
-const gridManager = new GridManager(canvasManager, settings);
+const gridManager = new GridManager({ settings, canvasManager });
 
 export function StartApp() {
   canvasManager.init();
   gridManager.init();
 
   onResize();
-  animationLoop(performance.now());
+
 
   addEventListener("resize", debounce(() => onResize(), 300));
+  canvasManager.getCanvas().addEventListener(
+    "click",
+    (evt) =>
+      setTargetParticleState(
+        evt,
+        canvasManager,
+        gridManager.getGrid(),
+        settings.svgWidth,
+        "fadeOut",
+      ),
+  );
+
+  canvasManager.getCanvas().addEventListener(
+    "mousemove",
+    (evt: MouseEvent) =>
+      setTargetParticleState(
+        evt,
+        canvasManager,
+        gridManager.getGrid(),
+        settings.svgWidth,
+        "hover",
+      ),
+  );
+
+  animationLoop(performance.now());
+}
+
+function setTargetParticleState(
+  evt: MouseEvent,
+  canvasHelper: CanvasManager,
+  grid: MatrixGrid,
+  cellWidth: number,
+  particleState: AnimationState,
+) {
+  const { mouseX, mouseY } = getRelativeMousePostion({
+    evt,
+    canvas: canvasHelper.getCanvas(),
+  });
+  const { row, column } = getMouseToGridPosition({
+    mouseX,
+    mouseY,
+    cellWidth,
+  });
+
+  grid[row][column].state = particleState;
 }
 
 function onResize() {
-  canvasManager.resize();
-  gridManager.resize();
+  const { canvasWidth, canvasHeight } = canvasManager.resize();
+  gridManager.resize({ canvasWidth, canvasHeight });
 }
 
 function updateParticles() {
@@ -37,7 +88,11 @@ function updateParticles() {
 }
 
 function renderParticles() {
-  gridManager.draw();
+  canvasManager.draw();
+  gridManager.draw({
+    context: canvasManager.getContext(),
+    spriteSheet: canvasManager.getOffscreenCanvas(),
+  });
 }
 
 function animationLoop(timeStamp: DOMHighResTimeStamp) {

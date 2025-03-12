@@ -5,8 +5,6 @@ interface Particle {
   height: number;
   arrayPositionX: number;
   arrayPositionY: number;
-  CanvasContext: CanvasRenderingContext2D;
-  offScreenCanvas: HTMLCanvasElement;
   numOfColours: number;
 }
 
@@ -36,17 +34,12 @@ export class ParticleHelper {
   bigger: boolean;
   state: AnimationState;
 
-  canvasContext: CanvasRenderingContext2D;
-  offScreenCanvas: HTMLCanvasElement;
-
   constructor(
     {
       width,
       height,
       arrayPositionX,
       arrayPositionY,
-      CanvasContext,
-      offScreenCanvas,
       numOfColours,
     }: Particle,
   ) {
@@ -71,9 +64,6 @@ export class ParticleHelper {
     this.colourChange = false;
     this.bigger = false;
     this.state = "spin";
-
-    this.canvasContext = CanvasContext;
-    this.offScreenCanvas = offScreenCanvas;
   }
 
   init() {}
@@ -131,12 +121,17 @@ export class ParticleHelper {
     }
   }
 
-  draw() {
-    this.canvasContext.save();
-    this.canvasContext.translate(this.translateX, this.translateY);
-    this.canvasContext.rotate(this.radians);
-    this.canvasContext.drawImage(
-      this.offScreenCanvas,
+  draw(
+    { context, spriteSheet }: {
+      context: CanvasRenderingContext2D;
+      spriteSheet: HTMLCanvasElement;
+    },
+  ) {
+    context.save();
+    context.translate(this.translateX, this.translateY);
+    context.rotate(this.radians);
+    context.drawImage(
+      spriteSheet,
       this.colour * this.width,
       0,
       this.width,
@@ -146,6 +141,6 @@ export class ParticleHelper {
       this.variableWidth,
       this.variableWidth,
     );
-    this.canvasContext.restore();
+    context.restore();
   }
 }
