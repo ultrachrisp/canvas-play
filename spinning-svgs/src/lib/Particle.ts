@@ -50,7 +50,7 @@ export class ParticleHelper {
 
     this.angle = 0;
     this.radians = 0;
-    this.radiansConversion = (Math.PI / 180);
+    this.radiansConversion = Math.PI / 180;
     this.centerX = this.width / 2;
     this.centerY = this.height / 2;
     this.translateX = (this.arrayPositionX * this.width) + this.centerX;

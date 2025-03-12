@@ -7,7 +7,14 @@ import {
   MatrixGrid,
 } from "./lib/GridManager";
 import { AnimationState } from "./lib/Particle";
-import { GeneralSettings } from "./types.d";
+
+export interface GeneralSettings {
+  tag: string;
+  svg: string;
+  svgQuery: string;
+  svgWidth: number;
+  colours: Array<string>;
+}
 
 const settings: GeneralSettings = {
   tag: "#canvas",
@@ -19,7 +26,7 @@ const settings: GeneralSettings = {
   colours: ["#000000", "#73505d", "#615b8f", "#5c7364", "#736d5c", "#ada555"],
 };
 
-export function StartApp() {
+export function SpinningSVGs() {
   const animationTimer = AnimationTimer();
   const canvasManager = new CanvasManager(settings);
   const { canvasWidth, canvasHeight } = canvasManager.resize();

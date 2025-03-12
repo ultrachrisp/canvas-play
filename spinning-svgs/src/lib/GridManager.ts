@@ -1,4 +1,4 @@
-import { GeneralSettings } from "../types";
+import { GeneralSettings } from "../SpinningSVGs";
 import { ParticleHelper } from "./Particle";
 
 export type MatrixGrid = Array<Array<ParticleHelper>>;

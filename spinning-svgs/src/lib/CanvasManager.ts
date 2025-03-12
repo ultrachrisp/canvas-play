@@ -1,4 +1,4 @@
-import { GeneralSettings } from "../types";
+import { GeneralSettings } from "../SpinningSVGs";
 
 type CanvasType = {
   canvas: HTMLCanvasElement;
