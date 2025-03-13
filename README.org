@@ -1,6 +1,5 @@
 #+TITLE: Adventures in canvas
 
-Canvas is an often overlooked feature in HTML5. Granted, it has it's downsides but it also has its strengths. I used this project to up-skill myself in HTML canvas concepts.
+Canvas is an often overlooked but can be so much fun too. This is folder is a scratch pad where I can play with ideas and concepts.
 
-This code still smells! I am attempting a more functional approach to writing particle systems in ES6.
-
+The ideas and their executions might not be perfect, but it's a place to learn and try different coding patterns. 

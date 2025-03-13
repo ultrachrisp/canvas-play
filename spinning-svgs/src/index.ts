@@ -1,5 +1,6 @@
-import { StartApp } from "./App";
+import "./style.css";
+import { SpinningSVGs } from "./SpinningSVGs";
 
 (() => {
-  StartApp();
+  SpinningSVGs();
 })();
