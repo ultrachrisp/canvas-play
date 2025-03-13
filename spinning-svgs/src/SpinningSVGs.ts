@@ -28,7 +28,7 @@ const settings: GeneralSettings = {
 
 export function SpinningSVGs() {
   const animationTimer = AnimationTimer();
-  const canvasManager = new CanvasManager(settings);
+  const canvasManager = CanvasManager({ settings });
   const { canvasWidth, canvasHeight } = canvasManager.resize();
   const gridManager = GridManager({ settings, canvasWidth, canvasHeight });
 
@@ -47,7 +47,7 @@ export function SpinningSVGs() {
 
   canvasManager.getCanvas().addEventListener(
     "mousemove",
-    (evt: MouseEvent) =>
+    (evt) =>
       setTargetParticleState(
         evt,
         canvasManager.getCanvas(),

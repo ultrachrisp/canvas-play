@@ -5,79 +5,56 @@ type CanvasType = {
   context: CanvasRenderingContext2D;
 };
 
-export class CanvasManager {
-  protected element: Element;
-  protected canvas: HTMLCanvasElement;
-  protected context: CanvasRenderingContext2D;
-  protected offScreenSpriteCanvas: HTMLCanvasElement;
-  protected offScreenSpriteContext: CanvasRenderingContext2D;
-  protected cellWidth: number;
+export function CanvasManager({ settings }: { settings: GeneralSettings }) {
+  let queryElement = document.querySelector(settings.tag);
+  if (!queryElement) {
+    throw new Error(
+      "Provided canvas tag does not exist in the HTML document",
+    );
+  }
+  const element = queryElement;
 
-  constructor(settings: GeneralSettings) {
-    const element = document.querySelector(settings.tag);
-    if (!element) {
-      throw new Error(
-        "Provided canvas tag does not exist in the HTML document",
-      );
-    }
+  element.replaceChildren();
+  const { canvas, context } = create2dCanvas();
+  element.appendChild(canvas);
 
-    element.replaceChildren();
-    this.element = element;
+  const cellWidth = settings.svgWidth;
+  const { canvas: offScreenSpriteCanvas, context: offScreenSpriteContext } =
+    create2dCanvas();
+  offScreenSpriteCanvas.width = settings.colours.length * cellWidth;
+  offScreenSpriteCanvas.height = cellWidth;
+  loadSvg({ settings, spriteContext: offScreenSpriteContext });
 
-    let { canvas, context } = create2dCanvas();
-    this.canvas = canvas;
-    this.context = context;
-    this.element.appendChild(this.canvas);
-
-    ({ canvas, context } = create2dCanvas());
-    this.offScreenSpriteCanvas = canvas;
-    this.offScreenSpriteContext = context;
-
-    this.offScreenSpriteCanvas.width = settings.colours.length *
-      settings.svgWidth;
-    this.offScreenSpriteCanvas.height = settings.svgWidth;
-    loadSvg({ settings, spriteContext: this.offScreenSpriteContext });
-
-    this.cellWidth = settings.svgWidth;
-    this.resize();
+  function getContext() {
+    return context;
   }
 
-  getCanvasAndContext(): CanvasType {
-    return { canvas: this.canvas, context: this.context };
+  function getCanvas() {
+    return canvas;
   }
 
-  getContext() {
-    return this.context;
+  function getOffscreenCanvas() {
+    return offScreenSpriteCanvas;
   }
 
-  getCanvas() {
-    return this.canvas;
-  }
-
-  getOffscreenContext() {
-    return this.offScreenSpriteContext;
-  }
-
-  getOffscreenCanvas() {
-    return this.offScreenSpriteCanvas;
-  }
-
-  resize() {
-    clearCanvas({ canvas: this.canvas, context: this.context });
+  function resize() {
+    clearCanvas({ canvas, context });
     const { canvasWidth, canvasHeight } = getAvailableSpace(
-      this.element,
-      this.cellWidth,
+      element,
+      cellWidth,
     );
 
-    this.canvas.width = canvasWidth;
-    this.canvas.height = canvasHeight;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
 
     return { canvasWidth, canvasHeight };
   }
 
-  draw() {
-    clearCanvas({ canvas: this.canvas, context: this.context });
+  function draw() {
+    clearCanvas({ canvas, context });
   }
+
+  return { resize, draw, getCanvas, getContext, getOffscreenCanvas };
 }
 
 function loadSvg(
@@ -109,12 +86,7 @@ function loadSvg(
 }
 
 function clearCanvas({ canvas, context }: CanvasType) {
-  return context.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height,
-  );
+  return context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function create2dCanvas(): CanvasType {
@@ -127,10 +99,8 @@ function create2dCanvas(): CanvasType {
 
 function getAvailableSpace(element: Element, cellWidth: number) {
   const { width, height } = element.getBoundingClientRect();
-  const canvasWidth = Math.floor(width / cellWidth) *
-    cellWidth;
-  const canvasHeight = Math.floor(height / cellWidth) *
-    cellWidth;
+  const canvasWidth = Math.floor(width / cellWidth) * cellWidth;
+  const canvasHeight = Math.floor(height / cellWidth) * cellWidth;
 
   return { canvasWidth, canvasHeight };
 }
