@@ -6,7 +6,9 @@ type CanvasType = {
 };
 
 export function CanvasManager({ settings }: { settings: GeneralSettings }) {
-  let queryElement = document.querySelector(settings.tag);
+  const { tag, colours, svgWidth: cellWidth } = settings;
+
+  let queryElement = document.querySelector(tag);
   if (!queryElement) {
     throw new Error(
       "Provided canvas tag does not exist in the HTML document",
@@ -18,10 +20,9 @@ export function CanvasManager({ settings }: { settings: GeneralSettings }) {
   const { canvas, context } = create2dCanvas();
   element.appendChild(canvas);
 
-  const cellWidth = settings.svgWidth;
   const { canvas: offScreenSpriteCanvas, context: offScreenSpriteContext } =
     create2dCanvas();
-  offScreenSpriteCanvas.width = settings.colours.length * cellWidth;
+  offScreenSpriteCanvas.width = colours.length * cellWidth;
   offScreenSpriteCanvas.height = cellWidth;
   loadSvg({ settings, spriteContext: offScreenSpriteContext });
 
@@ -63,23 +64,17 @@ function loadSvg(
     spriteContext: CanvasRenderingContext2D;
   },
 ) {
-  const { svg, svgQuery, colours } = settings;
+  const { svg, svgQuery, colours, svgWidth } = settings;
 
   let i = colours.length;
   while (i--) {
     const result = svg.replace(svgQuery, colours[i]);
     const uri = encodeURIComponent(result);
     const img = new Image();
-    const xOffset = i * settings.svgWidth;
+    const xOffset = i * svgWidth;
 
     img.onload = () => {
-      spriteContext.drawImage(
-        img,
-        xOffset,
-        0,
-        settings.svgWidth,
-        settings.svgWidth,
-      );
+      spriteContext.drawImage(img, xOffset, 0, svgWidth, svgWidth);
     };
     img.src = `data:image/svg+xml,${uri}`;
   }

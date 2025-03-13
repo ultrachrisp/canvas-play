@@ -30,7 +30,12 @@ export function SpinningSVGs() {
   const animationTimer = AnimationTimer();
   const canvasManager = CanvasManager({ settings });
   const { canvasWidth, canvasHeight } = canvasManager.resize();
-  const gridManager = GridManager({ settings, canvasWidth, canvasHeight });
+  const gridManager = GridManager({
+    cellWidth: settings.svgWidth,
+    numOfSprites: settings.colours.length,
+    canvasWidth,
+    canvasHeight,
+  });
 
   addEventListener("resize", debounce(() => onResize(), 300));
   canvasManager.getCanvas().addEventListener(

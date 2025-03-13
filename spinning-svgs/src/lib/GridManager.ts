@@ -1,16 +1,15 @@
-import { GeneralSettings } from "../SpinningSVGs";
 import { Particle, ParticleType } from "./Particle";
 
 export type MatrixGrid = Array<Array<ParticleType>>;
 
-export function GridManager({ settings, canvasWidth, canvasHeight }: {
-  settings: GeneralSettings;
-  canvasWidth: number;
-  canvasHeight: number;
-}) {
-  const cellWidth = settings.svgWidth;
-  const numOfSprites = settings.colours.length;
-
+export function GridManager(
+  { cellWidth, numOfSprites, canvasWidth, canvasHeight }: {
+    cellWidth: number;
+    numOfSprites: number;
+    canvasWidth: number;
+    canvasHeight: number;
+  },
+) {
   let { gridRows, gridColumns } = calculateGrid({
     canvasWidth,
     canvasHeight,
