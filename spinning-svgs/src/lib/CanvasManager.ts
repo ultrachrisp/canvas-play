@@ -8,7 +8,7 @@ type CanvasType = {
 export function CanvasManager({ settings }: { settings: GeneralSettings }) {
   const { tag, colours, svgWidth: cellWidth } = settings;
 
-  let queryElement = document.querySelector(tag);
+  const queryElement = document.querySelector(tag);
   if (!queryElement) {
     throw new Error(
       "Provided canvas tag does not exist in the HTML document",

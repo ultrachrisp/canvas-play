@@ -45,10 +45,12 @@ export function GridManager(
     });
   }
 
-  function update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
+  function update(
+    { frame, speedFactor }: { frame: number; speedFactor: number },
+  ) {
     for (let row = 0; row < gridRows; row++) {
       for (let col = 0; col < gridColumns; col++) {
-        grid[row][col].update({ speedFactor });
+        grid[row][col].update({ frame, speedFactor });
       }
     }
   }

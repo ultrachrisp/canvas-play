@@ -27,8 +27,8 @@ export function Particle({
   arrayPositionY,
   numOfColours,
 }: Particle): ParticleType {
-  let variableWidth = width;
-  let variableCenter = width / 2;
+  let variableWidth = 1;
+  let variableCenter = variableWidth / 2;
 
   let angle = 0;
   let radians = 0;
@@ -38,10 +38,23 @@ export function Particle({
 
   let colour = 0;
   let changeColour = false;
-  let enlarge = false;
-  let state: AnimationState = "spin";
+  let enlarge = true;
+  let state: AnimationState = "fadeIn";
+  // let delay = 0;
+  // let distanceFromSpecial = 0;
+  const fadeInStartWeight = arrayPositionX + arrayPositionY;
 
-  function fadeIn() {}
+  function fadeIn(frame: number) {
+    if (fadeInStartWeight < frame) {
+      variableWidth *= 1.05;
+      variableCenter = variableWidth / 2;
+      if (variableWidth >= width) {
+        variableWidth = width;
+        enlarge = false;
+        state = "spin";
+      }
+    }
+  }
 
   function fadeOut() {}
 
@@ -73,13 +86,15 @@ export function Particle({
     return (colour >= numOfColours - 1) ? 0 : ++colour;
   }
 
-  function update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
+  function update(
+    { frame, speedFactor }: { frame: number; speedFactor: number },
+  ) {
     angle = (angle > 360) ? 0 : angle + speedFactor;
     radians = angle * radiansConversion;
 
     switch (state) {
       case "fadeIn":
-        fadeIn();
+        fadeIn(frame);
         break;
       case "fadeOut":
         fadeOut();

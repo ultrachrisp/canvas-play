@@ -63,12 +63,13 @@ export function SpinningSVGs() {
   );
 
   function onResize() {
+    animationTimer.setFrame(0);
     const { canvasWidth, canvasHeight } = canvasManager.resize();
     gridManager.resize({ canvasWidth, canvasHeight });
   }
 
   function updateParticles() {
-    gridManager.update({ speedFactor: animationTimer.getSpeedFactor() });
+    gridManager.update({ ...animationTimer.getFrame() });
   }
 
   function renderParticles() {
