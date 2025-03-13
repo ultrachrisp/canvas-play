@@ -3,101 +3,89 @@ import { ParticleHelper } from "./Particle";
 
 export type MatrixGrid = Array<Array<ParticleHelper>>;
 
-export class GridManager {
-  protected grid: MatrixGrid;
-  protected gridRows: number;
-  protected gridColumns: number;
-  protected cellWidth: number;
-  protected numOfSprites: number;
+export function GridManager({ settings, canvasWidth, canvasHeight }: {
+  settings: GeneralSettings;
+  canvasWidth: number;
+  canvasHeight: number;
+}) {
+  const cellWidth = settings.svgWidth;
+  const numOfSprites = settings.colours.length;
 
-  constructor({ settings, canvasWidth, canvasHeight }: {
-    settings: GeneralSettings;
+  let { gridRows, gridColumns } = calculateGrid({
+    canvasWidth,
+    canvasHeight,
+    cellWidth,
+  });
+
+  let grid = populateGrid({
+    gridRows,
+    gridColumns,
+    cellWidth,
+    numOfSprites,
+  });
+
+  function getGrid() {
+    return grid;
+  }
+
+  function resize({ canvasWidth, canvasHeight }: {
     canvasWidth: number;
     canvasHeight: number;
   }) {
-    this.cellWidth = settings.svgWidth;
-    this.numOfSprites = settings.colours.length;
-
-    const { rows, columns } = calculateGrid({
+    ({ gridRows, gridColumns } = calculateGrid({
       canvasWidth,
       canvasHeight,
-      cellWidth: settings.svgWidth,
-    });
+      cellWidth,
+    }));
 
-    this.gridRows = rows;
-    this.gridColumns = columns;
-
-    this.grid = populateGrid({
-      rows: this.gridRows,
-      columns: this.gridColumns,
-      cellWidth: this.cellWidth,
-      numOfSprites: this.numOfSprites,
+    grid = populateGrid({
+      gridRows,
+      gridColumns,
+      cellWidth,
+      numOfSprites,
     });
   }
 
-  getGrid() {
-    return this.grid;
-  }
-
-  resize({ canvasWidth, canvasHeight }: {
-    canvasWidth: number;
-    canvasHeight: number;
-  }) {
-    const { rows, columns } = calculateGrid({
-      canvasWidth,
-      canvasHeight,
-      cellWidth: this.cellWidth,
-    });
-
-    this.gridRows = rows;
-    this.gridColumns = columns;
-
-    this.grid = populateGrid({
-      rows,
-      columns,
-      cellWidth: this.cellWidth,
-      numOfSprites: this.numOfSprites,
-    });
-  }
-
-  update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
-    for (let row = 0; row < this.gridRows; row++) {
-      for (let col = 0; col < this.gridColumns; col++) {
-        this.grid[row][col].update({ speedFactor });
+  function update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
+    for (let row = 0; row < gridRows; row++) {
+      for (let col = 0; col < gridColumns; col++) {
+        grid[row][col].update({ speedFactor });
       }
     }
   }
 
-  draw(
+  function draw(
     { context, spriteSheet }: {
       context: CanvasRenderingContext2D;
       spriteSheet: HTMLCanvasElement;
     },
   ) {
-    for (let row = 0; row < this.gridRows; row++) {
-      for (let col = 0; col < this.gridColumns; col++) {
-        this.grid[row][col].draw({ context, spriteSheet });
+    for (let row = 0; row < gridRows; row++) {
+      for (let col = 0; col < gridColumns; col++) {
+        grid[row][col].draw({ context, spriteSheet });
       }
     }
   }
+
+  return { getGrid, resize, update, draw };
 }
 
 function populateGrid({
-  rows,
-  columns,
+  gridRows,
+  gridColumns,
   cellWidth,
   numOfSprites,
 }: {
-  rows: number;
-  columns: number;
+  gridRows: number;
+  gridColumns: number;
   cellWidth: number;
   numOfSprites: number;
 }) {
-  const grid = new Array(rows);
+  const grid = new Array(gridRows);
 
-  for (let row = 0; row < rows; row++) {
-    grid[row] = new Array(columns);
-    for (let col = 0; col < columns; col++) {
+  for (let row = 0; row < gridRows; row++) {
+    grid[row] = new Array(gridColumns);
+    for (let col = 0; col < gridColumns; col++) {
       const particle = new ParticleHelper({
         width: cellWidth,
         height: cellWidth,
@@ -144,8 +132,8 @@ function calculateGrid(
     cellWidth: number;
   },
 ) {
-  const rows = Math.floor(canvasWidth / cellWidth);
-  const columns = Math.floor(canvasHeight / cellWidth);
+  const gridRows = Math.floor(canvasWidth / cellWidth);
+  const gridColumns = Math.floor(canvasHeight / cellWidth);
 
-  return { rows, columns };
+  return { gridRows, gridColumns };
 }
