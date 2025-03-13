@@ -6,11 +6,11 @@ interface Particle {
   numOfColours: number;
 }
 
-export type AnimationState = "spin" | "fadeOut" | "fadeIn" | "hover";
+export type AnimationState = "spin" | "fadeIn" | "hover" | "wave";
 
 export type ParticleType = {
   hover: () => void;
-  update: (params: { speedFactor: DOMHighResTimeStamp }) => void;
+  update: (params: { frame: number; speedFactor: number }) => void;
   draw: (
     params: {
       context: CanvasRenderingContext2D;
@@ -18,6 +18,9 @@ export type ParticleType = {
     },
   ) => void;
   setParticleState: (newState: AnimationState) => void;
+  getParticleState: () => AnimationState;
+  getArrayPosition: () => { arrayPositionX: number; arrayPositionY: number };
+  setDistanceToTarget: (distance: number, newState: AnimationState) => void;
 };
 
 export function Particle({
@@ -40,8 +43,8 @@ export function Particle({
   let changeColour = false;
   let enlarge = true;
   let state: AnimationState = "fadeIn";
-  // let delay = 0;
-  // let distanceFromSpecial = 0;
+  let delay = 0;
+  let distanceFromTarget = 0;
   const fadeInStartWeight = arrayPositionX + arrayPositionY;
 
   function fadeIn(frame: number) {
@@ -55,8 +58,6 @@ export function Particle({
       }
     }
   }
-
-  function fadeOut() {}
 
   function hover() {
     if (enlarge) {
@@ -79,6 +80,32 @@ export function Particle({
     variableCenter = variableWidth / 2;
   }
 
+  function wave(frame: number) {
+    if (delay === 0) delay = frame;
+
+    if ((distanceFromTarget + delay) <= frame) {
+      if (enlarge) {
+        variableWidth *= 1.05;
+        colour = 0;
+
+        if (variableWidth >= width) {
+          variableWidth = width;
+          enlarge = false;
+          state = "spin";
+          delay = 0;
+        }
+      } else {
+        variableWidth *= 0.95;
+        if (variableWidth < 15) {
+          enlarge = true;
+          changeColour = true;
+        }
+      }
+
+      variableCenter = variableWidth / 2;
+    }
+  }
+
   function getHoverColour() {
     if (!changeColour) return colour;
     changeColour = false;
@@ -96,11 +123,11 @@ export function Particle({
       case "fadeIn":
         fadeIn(frame);
         break;
-      case "fadeOut":
-        fadeOut();
-        break;
       case "hover":
         hover();
+        break;
+      case "wave":
+        wave(frame);
         break;
       case "spin":
       default:
@@ -135,5 +162,26 @@ export function Particle({
     state = newState;
   }
 
-  return { hover, update, draw, setParticleState };
+  function getParticleState() {
+    return state;
+  }
+
+  function getArrayPosition() {
+    return { arrayPositionX, arrayPositionY };
+  }
+
+  function setDistanceToTarget(distance: number, newState: AnimationState) {
+    distanceFromTarget = distance;
+    state = newState;
+  }
+
+  return {
+    hover,
+    update,
+    draw,
+    setParticleState,
+    getParticleState,
+    getArrayPosition,
+    setDistanceToTarget,
+  };
 }

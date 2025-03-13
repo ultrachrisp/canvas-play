@@ -45,6 +45,26 @@ export function GridManager(
     });
   }
 
+  function prepareWave(
+    { targetRow, targetColumn }: { targetRow: number; targetColumn: number },
+  ) {
+    const targetParticle = grid[targetRow][targetColumn];
+    targetParticle.setParticleState("click");
+
+    const { arrayPositionX: targetX, arrayPositionY: targetY } = targetParticle
+      .getArrayPosition();
+
+    for (let row = 0; row < gridRows; row++) {
+      for (let col = 0; col < gridColumns; col++) {
+        const { arrayPositionX, arrayPositionY } = grid[row][col]
+          .getArrayPosition();
+        const distance = Math.abs(targetX - arrayPositionX) +
+          Math.abs(targetY - arrayPositionY);
+        grid[row][col].setDistanceToTarget(distance, "wave");
+      }
+    }
+  }
+
   function update(
     { frame, speedFactor }: { frame: number; speedFactor: number },
   ) {
@@ -68,7 +88,7 @@ export function GridManager(
     }
   }
 
-  return { getGrid, resize, update, draw };
+  return { getGrid, resize, update, draw, prepareWave };
 }
 
 function populateGrid({
