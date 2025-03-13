@@ -104,7 +104,7 @@ function setTargetParticleState(
     cellWidth,
   });
 
-  grid[row][column].state = particleState;
+  grid[row][column].setParticleState(particleState);
 }
 
 function debounce<F extends (...args: Parameters<F>) => ReturnType<F>>(

@@ -1,7 +1,7 @@
 import { GeneralSettings } from "../SpinningSVGs";
-import { ParticleHelper } from "./Particle";
+import { Particle, ParticleType } from "./Particle";
 
-export type MatrixGrid = Array<Array<ParticleHelper>>;
+export type MatrixGrid = Array<Array<ParticleType>>;
 
 export function GridManager({ settings, canvasWidth, canvasHeight }: {
   settings: GeneralSettings;
@@ -86,7 +86,7 @@ function populateGrid({
   for (let row = 0; row < gridRows; row++) {
     grid[row] = new Array(gridColumns);
     for (let col = 0; col < gridColumns; col++) {
-      const particle = new ParticleHelper({
+      const particle = Particle({
         width: cellWidth,
         height: cellWidth,
         arrayPositionX: row,

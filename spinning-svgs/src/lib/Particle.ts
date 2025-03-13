@@ -8,135 +8,117 @@ interface Particle {
 
 export type AnimationState = "spin" | "fadeOut" | "fadeIn" | "hover";
 
-export class ParticleHelper {
-  width: number;
-  height: number;
-  arrayPositionX: number;
-  arrayPositionY: number;
+export type ParticleType = {
+  hover: () => void;
+  update: (params: { speedFactor: DOMHighResTimeStamp }) => void;
+  draw: (
+    params: {
+      context: CanvasRenderingContext2D;
+      spriteSheet: HTMLCanvasElement;
+    },
+  ) => void;
+  setParticleState: (newState: AnimationState) => void;
+};
 
-  variableWidth: number;
-  variableCenter: number;
+export function Particle({
+  width,
+  height,
+  arrayPositionX,
+  arrayPositionY,
+  numOfColours,
+}: Particle): ParticleType {
+  let variableWidth = width;
+  let variableCenter = width / 2;
 
-  angle: number;
-  radians: number;
-  radiansConversion: number;
-  centerX: number;
-  centerY: number;
-  translateX: number;
-  translateY: number;
+  let angle = 0;
+  let radians = 0;
+  const radiansConversion = Math.PI / 180;
+  const translateX = (arrayPositionX * width) + (width / 2);
+  const translateY = (arrayPositionY * height) + (height / 2);
 
-  colour: number;
-  numOfColours: number;
-  colourChange: boolean;
-  bigger: boolean;
-  state: AnimationState;
+  let colour = 0;
+  let changeColour = false;
+  let enlarge = false;
+  let state: AnimationState = "spin";
 
-  constructor(
-    {
-      width,
-      height,
-      arrayPositionX,
-      arrayPositionY,
-      numOfColours,
-    }: Particle,
-  ) {
-    this.width = width;
-    this.height = height;
-    this.arrayPositionX = arrayPositionX;
-    this.arrayPositionY = arrayPositionY;
+  function fadeIn() {}
 
-    this.variableWidth = width;
-    this.variableCenter = this.width / 2;
+  function fadeOut() {}
 
-    this.angle = 0;
-    this.radians = 0;
-    this.radiansConversion = Math.PI / 180;
-    this.centerX = this.width / 2;
-    this.centerY = this.height / 2;
-    this.translateX = (this.arrayPositionX * this.width) + this.centerX;
-    this.translateY = (this.arrayPositionY * this.width) + this.centerY;
+  function hover() {
+    if (enlarge) {
+      variableWidth *= 1.05;
+      colour = getHoverColour();
 
-    this.colour = 0;
-    this.numOfColours = numOfColours;
-    this.colourChange = false;
-    this.bigger = false;
-    this.state = "spin";
-  }
-
-  init() {}
-
-  fadeIn() {}
-
-  fadeOut() {}
-
-  hover() {
-    if (!this.bigger) {
-      this.variableWidth *= 0.95;
-      if (this.variableWidth < 15) {
-        this.bigger = true;
-        this.colourChange = true;
+      if (variableWidth >= width) {
+        variableWidth = width;
+        enlarge = false;
+        state = "spin";
       }
     } else {
-      this.variableWidth *= 1.05;
-      this.colour = this.getHoverColour();
-
-      if (this.variableWidth >= this.width) {
-        this.variableWidth = this.width;
-        this.bigger = false;
-        this.state = "spin";
+      variableWidth *= 0.95;
+      if (variableWidth < 15) {
+        enlarge = true;
+        changeColour = true;
       }
     }
 
-    this.variableCenter = this.variableWidth / 2;
+    variableCenter = variableWidth / 2;
   }
 
-  getHoverColour() {
-    if (!this.colourChange) return this.colour;
-    this.colourChange = false;
+  function getHoverColour() {
+    if (!changeColour) return colour;
+    changeColour = false;
 
-    return (this.colour >= this.numOfColours - 1) ? 0 : (this.colour + 1);
+    return (colour >= numOfColours - 1) ? 0 : ++colour;
   }
 
-  update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
-    this.angle = (this.angle > 360) ? 0 : this.angle + speedFactor;
-    this.radians = this.angle * this.radiansConversion;
+  function update({ speedFactor }: { speedFactor: DOMHighResTimeStamp }) {
+    angle = (angle > 360) ? 0 : angle + speedFactor;
+    radians = angle * radiansConversion;
 
-    switch (this.state) {
+    switch (state) {
       case "fadeIn":
-        this.fadeIn();
+        fadeIn();
         break;
       case "fadeOut":
-        this.fadeOut();
+        fadeOut();
         break;
       case "hover":
-        this.hover();
+        hover();
         break;
       case "spin":
       default:
-        this.state = "spin";
+        state = "spin";
     }
   }
 
-  draw(
+  function draw(
     { context, spriteSheet }: {
       context: CanvasRenderingContext2D;
       spriteSheet: HTMLCanvasElement;
     },
   ) {
     context.save();
-    context.translate(this.translateX, this.translateY);
-    context.rotate(this.radians);
+    context.translate(translateX, translateY);
+    context.rotate(radians);
     context.drawImage(
       spriteSheet,
-      this.colour * this.width,
+      colour * width,
       0,
-      this.width,
-      this.height,
-      -this.variableCenter,
-      -this.variableCenter,
-      this.variableWidth,
-      this.variableWidth,
+      width,
+      height,
+      -variableCenter,
+      -variableCenter,
+      variableWidth,
+      variableWidth,
     );
     context.restore();
   }
+
+  function setParticleState(newState: AnimationState) {
+    state = newState;
+  }
+
+  return { hover, update, draw, setParticleState };
 }
