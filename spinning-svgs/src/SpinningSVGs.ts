@@ -1,10 +1,10 @@
-import { AnimationTimer } from "./lib/AnimationTimer";
-import { CanvasManager } from "./lib/CanvasManager";
+import { AnimationTimer } from "./lib/AnimationTimer.ts";
+import { CanvasManager } from "./lib/CanvasManager.ts";
 import {
   getMouseToGridPosition,
   getRelativeMousePostion,
   GridManager,
-} from "./lib/GridManager";
+} from "./lib/GridManager.ts";
 
 export interface GeneralSettings {
   tag: string;

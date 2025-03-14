@@ -2,6 +2,7 @@
   "version": "4",
   "specifiers": {
     "npm:create-vite@latest": "6.2.0",
+    "npm:typescript@5.7.3": "5.7.3",
     "npm:typescript@~5.7.2": "5.7.3",
     "npm:vite@6.1.1": "6.1.1",
     "npm:vite@^6.1.0": "6.1.1"
