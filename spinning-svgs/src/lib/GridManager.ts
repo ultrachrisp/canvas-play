@@ -1,4 +1,4 @@
-import { Particle, ParticleType } from "./Particle.ts";
+import { Particle, type ParticleType } from "./Particle.ts";
 
 export type MatrixGrid = Array<Array<ParticleType>>;
 

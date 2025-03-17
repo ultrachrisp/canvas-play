@@ -1,4 +1,4 @@
-import { GeneralSettings } from "../SpinningSVGs.ts";
+import type { GeneralSettings } from "../SpinningSVGs.ts";
 
 type CanvasType = {
   canvas: HTMLCanvasElement;
