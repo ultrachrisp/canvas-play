@@ -1,11 +1,20 @@
 {
-    "name": "@ultrachrisp/spinning-svgs",
-    "version": "0.1.0",
-    "license": "MIT",
-    "exports": "./mod.ts",
-    "publish": {
-        "exclude": [
-            "!dist"
-        ]
-    }
+  "name": "@ultrachrisp/spinning-svgs",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": "./mod.ts",
+  "tasks": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "publish": {
+    "exclude": [
+      "!dist"
+    ]
+  },
+  "imports": {
+    "typescript": "npm:typescript@^5.8.2",
+    "vite": "npm:vite@^6.2.2"
+  }
 }
