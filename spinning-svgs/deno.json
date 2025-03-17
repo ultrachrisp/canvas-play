@@ -1,0 +1,24 @@
+{
+  "name": "@ultrachrisp/spinning-svgs",
+  "version": "0.1.2",
+  "license": "MIT",
+  "exports": {
+    ".": "./dist/mod.ts",
+    ".": "./dist/index.js"
+  },
+  "tasks": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "publish": {
+    "exclude": [
+      "!dist"
+    ]
+  },
+  "imports": {
+    "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.4",
+    "typescript": "npm:typescript@^5.8.2",
+    "vite": "npm:vite@^6.2.2"
+  }
+}

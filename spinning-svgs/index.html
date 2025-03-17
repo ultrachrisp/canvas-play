@@ -4,11 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spinning SVGs</title>
+
+    <style>
+      body {
+        margin: 0;
+      }
+
+      .wrapper {
+        margin: 20px;
+        box-shadow: 0px 0px 8px 8px #ccc;
+        width: calc(99vw - 20px);
+        height: calc(98vh - 20px);
+      }
+    </style>
   </head>
   <body>
     <section class="wrapper">
       <div id="canvas">Thing</div>
     </section>
-    <script type="module" src="/src/index.ts"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

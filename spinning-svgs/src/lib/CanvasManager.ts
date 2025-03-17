@@ -1,4 +1,4 @@
-import { GeneralSettings } from "../SpinningSVGs";
+import type { GeneralSettings } from "../SpinningSVGs.ts";
 
 type CanvasType = {
   canvas: HTMLCanvasElement;
@@ -19,6 +19,10 @@ export function CanvasManager({ settings }: { settings: GeneralSettings }) {
   element.replaceChildren();
   const { canvas, context } = create2dCanvas();
   element.appendChild(canvas);
+  element.setAttribute(
+    "style",
+    "box-sizing: border-box; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;",
+  );
 
   const { canvas: offScreenSpriteCanvas, context: offScreenSpriteContext } =
     create2dCanvas();
