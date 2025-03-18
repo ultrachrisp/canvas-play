@@ -21,7 +21,9 @@ const settings: GeneralSettings = {
   svgQuery: "%COLOUR%",
   svgWidth: 60,
   // colours: ["#000000", "#73505d", "#312f43", "#5c7364", "#736d5c", "#3a3834"],
-  colours: ["#000000", "#73505d", "#615b8f", "#5c7364", "#736d5c", "#ada555"],
+  // colours: ["#000000", "#73505d", "#615b8f", "#5c7364", "#736d5c", "#ada555"],
+  // colours: ["#000000", "#8ECAE6", "#219EBC", "#023047", "#FFB703", "#FB8500"],
+  colours: ["#000000", "#4F000B", "#720026", "#CE4257", "#FF7F51", "#FF9B54"],
 };
 
 export function SpinningSVGs() {

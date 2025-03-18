@@ -4,7 +4,8 @@
   "license": "MIT",
   "exports": {
     "./src": "./src/index.ts",
-    "./dist": "./dist/index.js"
+    "./dist": "./dist/index.js",
+    "./dist": "./dist/index.d.ts"
   },
   "tasks": {
     "dev": "vite",
