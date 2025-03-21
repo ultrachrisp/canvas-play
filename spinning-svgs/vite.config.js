@@ -5,13 +5,13 @@ export default defineConfig({
   plugins: [deno()],
   build: {
     lib: {
-      entry: ["src/SpinningSVGs.ts"],
+      entry: ["./mod.ts"],
       name: "SpinningSVGs",
       fileName: "spinning-svgs",
     },
     rollupOptions: {
       input: {
-        index: "src/SpinningSVGs.ts",
+        index: "./mod.ts",
       },
     },
   },

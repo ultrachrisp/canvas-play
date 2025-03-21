@@ -14,7 +14,7 @@ export interface GeneralSettings {
   colours: Array<string>;
 }
 
-export function SpinningSVGs(settings: GeneralSettings) {
+export function SpinningSVGs({ settings }: { settings: GeneralSettings }) {
   const animationTimer = AnimationTimer();
   const canvasManager = CanvasManager({ settings });
   const { canvasWidth, canvasHeight } = canvasManager.resize();
