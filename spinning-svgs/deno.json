@@ -4,7 +4,7 @@
   "license": "MIT",
   "exports": {
     ".": "./src/index.ts",
-    "./dist": "./dist/spinning-svgs.mjs"
+    "./dist/index.js": "./dist/spinning-svgs.mjs"
   },
   "tasks": {
     "dev": "vite",
@@ -15,11 +15,6 @@
     "lib": [
       "dom",
       "esnext"
-    ]
-  },
-  "publish": {
-    "exclude": [
-      "!dist"
     ]
   },
   "imports": {
