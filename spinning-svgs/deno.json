@@ -4,7 +4,7 @@
   "license": "MIT",
   "exports": {
     ".": "./src/index.ts",
-    "./dist/index.js": "./dist/spinning-svgs.mjs"
+    "./dist": "./dist/spinning-svgs.mjs"
   },
   "tasks": {
     "dev": "vite",
