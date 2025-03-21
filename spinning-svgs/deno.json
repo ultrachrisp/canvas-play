@@ -1,10 +1,10 @@
 {
   "name": "@ultrachrisp/spinning-svgs",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "license": "MIT",
   "exports": {
     ".": "./src/index.ts",
-    "./dist/index.js": "./dist/spinning-svgs.mjs"
+    "./dist": "./dist/spinning-svgs.mjs"
   },
   "tasks": {
     "dev": "vite",
