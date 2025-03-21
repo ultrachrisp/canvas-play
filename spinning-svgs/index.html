@@ -24,9 +24,12 @@
     </section>
     <script type="module">
       import { SpinningSVGs } from "./src/SpinningSVGs.ts";
-      /* import {SpinningSVGs} from "./dist/my-lib.umd.js"; */
+
       // useful for dev, but moved inline for publishing
-      import "./src/style.css";
+      //import "./src/style.css";
+
+      // useful to ensure it's working as expected
+      /* import {SpinningSVGs} from "./dist/spinning-svgs.mjs"; */
 
       const settings = {
         tag: "#canvas",
@@ -47,9 +50,7 @@
         ],
       };
 
-      (() => {
         SpinningSVGs(settings);
-      })();
     </script>
   </body>
 </html>
