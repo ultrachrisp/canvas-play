@@ -3,7 +3,6 @@
 .cache/
 
 node_modules/
-dist/
 dist_test/
 public/
 .log/
