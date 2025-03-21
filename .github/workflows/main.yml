@@ -13,4 +13,4 @@ jobs:
       id-token: write # The OIDC ID token is used for authentication with JSR.
     steps:
       - uses: actions/checkout@v4
-      - run: npx jsr publish --no-check --allow-slow-types # Not great, but I can type check once I start supporting TS natively in my hugo setup
+      - run: npx jsr publish --no-check # Not great, but I can type check once I start supporting TS natively in my hugo setup
