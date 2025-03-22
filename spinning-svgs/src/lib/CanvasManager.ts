@@ -5,6 +5,21 @@ type CanvasType = {
   context: CanvasRenderingContext2D;
 };
 
+/**
+ * Manages the canvas for the spinning SVG animation.
+ * @param {Object} settings - Settings for the animation.
+ * @param {string} settings.tag - A valid HTML tag that exists in the DOM.
+ * @param {string} settings.svg - The SVG string that will be used in the animation.
+ * @param {string} settings.svgQuery - A query string that will be replaced with the values in settings.colours.
+ * @param {number} settings.svgWidth - The width of the svg when rendered on the canvas.
+ * @param {Array<string>} settings.colours - An array of colours that will be used for the animation.
+ * @returns {Object} - An object containing the following functions:
+ *  - getContext: Returns the 2D drawing context of the canvas.
+ *  - getCanvas: Returns the canvas.
+ *  - getOffscreenCanvas: Returns the offscreen canvas used for the sprite sheet.
+ *  - resize: Resizes the canvas based on the new canvas dimensions.
+ *  - draw: Draws the grid of particles onto the given context.
+ */
 export function CanvasManager({ settings }: { settings: GeneralSettings }) {
   const { tag, colours, svgWidth: cellWidth } = settings;
 

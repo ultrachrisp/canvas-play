@@ -23,6 +23,25 @@ export type ParticleType = {
   setDistanceToTarget: (distance: number, newState: AnimationState) => void;
 };
 
+/**
+ * Creates a Particle object that can perform various animations such as
+ * fade-in, hover, and wave, and can be drawn on a canvas.
+ *
+ * @param {number} width - The width of the particle.
+ * @param {number} height - The height of the particle.
+ * @param {number} arrayPositionX - The X position of the particle in the grid.
+ * @param {number} arrayPositionY - The Y position of the particle in the grid.
+ * @param {number} numOfColours - The number of colours available for the particle.
+ * @returns {ParticleType} - An object with methods to manipulate and render
+ *   the particle, including:
+ *   - `hover()`: Trigger the hover animation.
+ *   - `update(params: { frame: number, speedFactor: number })`: Update the particle's state and animation.
+ *   - `draw(params: { context: CanvasRenderingContext2D, spriteSheet: HTMLCanvasElement })`: Draw the particle on the canvas.
+ *   - `setParticleState(newState: AnimationState)`: Set the particle's animation state.
+ *   - `getParticleState()`: Get the particle's current animation state.
+ *   - `getArrayPosition()`: Get the particle's position in the grid.
+ *   - `setDistanceToTarget(distance: number, newState: AnimationState)`: Set the distance to the target for the wave animation and update the state.
+ */
 export function Particle({
   width,
   height,

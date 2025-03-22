@@ -2,6 +2,19 @@ import { Particle, type ParticleType } from "./Particle.ts";
 
 export type MatrixGrid = Array<Array<ParticleType>>;
 
+/**
+ * A GridManager is a class that manages a matrix of Particles, all of which
+ * are drawn on a single canvas. It can be used to create animations of
+ * spinning svgs.
+ *
+ * @param {Object} args - Settings for the GridManager.
+ * @param {number} args.cellWidth - The width of each cell in the grid.
+ * @param {number} args.numOfSprites - The number of sprites that will be drawn on the canvas.
+ * @param {number} args.canvasWidth - The width of the canvas.
+ * @param {number} args.canvasHeight - The height of the canvas.
+ * @returns {Object} A GridManager object with methods to `getGrid`, `resize`,
+ *   `update`, `draw`, and `prepareWave`.
+ */
 export function GridManager(
   { cellWidth, numOfSprites, canvasWidth, canvasHeight }: {
     cellWidth: number;
