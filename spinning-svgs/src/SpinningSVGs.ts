@@ -14,6 +14,16 @@ export interface GeneralSettings {
   colours: Array<string>;
 }
 
+/**
+ * Initialises a canvas element with an animation of spinning svgs.
+ * @param {Object} settings - Settings for the animation.
+ * @param {string} settings.tag - A valid HTML tag that exists in the DOM.
+ * @param {string} settings.svg - The SVG string that will be used in the animation.
+ * @param {string} settings.svgQuery - A query string that will be replaced with the values in settings.colours.
+ * @param {number} settings.svgWidth - The width of the svg when rendered on the canvas.
+ * @param {Array<string>} settings.colours - An array of colours that will be used for the animation.
+ * @memberof SpinningSVGs
+ */
 export function SpinningSVGs({ settings }: { settings: GeneralSettings }) {
   const animationTimer = AnimationTimer();
   const canvasManager = CanvasManager({ settings });
