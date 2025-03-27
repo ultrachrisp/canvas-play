@@ -6,6 +6,15 @@ import {
   GridManager,
 } from "./lib/GridManager.ts";
 
+/**
+ * Represents the general settings for the spinning SVG animation.
+ * @interface GeneralSettings
+ * @property {string} tag - A valid HTML tag that exists in the DOM.
+ * @property {string} svg - The SVG string that will be used in the animation.
+ * @property {string} svgQuery - A query string that will be replaced with the values in `colours`.
+ * @property {number} svgWidth - The width of the SVG when rendered on the canvas.
+ * @property {Array<string>} colours - An array of colours that will be used for the animation.
+ */
 export interface GeneralSettings {
   tag: string;
   svg: string;

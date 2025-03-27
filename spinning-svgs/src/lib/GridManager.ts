@@ -1,6 +1,4 @@
-import { Particle, type ParticleType } from "./Particle.ts";
-
-export type MatrixGrid = Array<Array<ParticleType>>;
+import { Particle } from "./Particle.ts";
 
 /**
  * A GridManager is a class that manages a matrix of Particles, all of which

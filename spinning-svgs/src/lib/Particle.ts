@@ -6,9 +6,9 @@ interface Particle {
   numOfColours: number;
 }
 
-export type AnimationState = "spin" | "fadeIn" | "hover" | "wave";
+type AnimationState = "spin" | "fadeIn" | "hover" | "wave";
 
-export type ParticleType = {
+type ParticleType = {
   hover: () => void;
   update: (params: { frame: number; speedFactor: number }) => void;
   draw: (
