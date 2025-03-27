@@ -1,21 +1,21 @@
 /**
- * AnimationTimer is a utility function that keeps track of an animation's
- * frame number and speed factor.
+ * A utility function to manage animation timing by tracking the frame number
+ * and speed factor.
  *
- * The frame number is an incrementing number that can be reset, and the speed
- * factor is a value that represents how quickly the animation should be
- * progressing. The speed factor is calculated by multiplying the difference
- * between the current and last timestamps by a constant frame rate (60fps).
+ * The frame number is an incrementing value that can be reset, while the speed
+ * factor determines how quickly the animation progresses. The speed factor is
+ * calculated based on the time difference between the current and previous
+ * timestamps, scaled to a constant frame rate (60fps).
  *
- * @returns An object with the following methods:
- *   - `setTimestamp(timestamp: number)`: Set the current timestamp and update
- *     the frame number and speed factor.
- *   - `getFrame()`: Get the current frame number and speed factor.
- *   - `setFrame(frame: number)`: Set the current frame number.
- *   - `getSpeedFactor(): number`: Get the current speed factor.
+ * @returns An object with methods to control and retrieve animation timing:
+ * - `setTimestamp(timestamp: number)`: Updates the current timestamp, frame
+ *   number, and speed factor.
+ * - `getFrame()`: Retrieves the current frame number and speed factor.
+ * - `setFrame(frame: number)`: Resets the frame number to a specific value.
+ * - `getSpeedFactor(): number`: Retrieves the current speed factor.
  */
 export function AnimationTimer() {
-  const fps = 60 / 1000;
+  const fps = (hasTouchSupport() ? 120 : 60) / 1000; // setting fps based off of bad mobile device detection
   let speedFactor = -1;
   let lastTimestamp = -1;
   let lastFrame = 0; // my own, independant frame counter that I can reset
@@ -45,4 +45,8 @@ export function AnimationTimer() {
     setFrame,
     getSpeedFactor,
   };
+}
+
+function hasTouchSupport() {
+  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 }
