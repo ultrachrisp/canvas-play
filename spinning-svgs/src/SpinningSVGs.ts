@@ -6,6 +6,16 @@ import {
   GridManager,
 } from "./lib/GridManager.ts";
 
+/**
+ * Represents the general settings for the spinning SVG animation.
+ *
+ * @interface
+ * @property tag - A valid HTML tag that exists in the DOM.
+ * @property svg - The SVG string that will be used in the animation.
+ * @property svgQuery - A query string that will be replaced with the values in `colours`.
+ * @property svgWidth - The width of the SVG when rendered on the canvas.
+ * @property colours - An array of colours that will be used for the animation.
+ */
 export interface GeneralSettings {
   tag: string;
   svg: string;
@@ -15,14 +25,14 @@ export interface GeneralSettings {
 }
 
 /**
- * Initialises a canvas element with an animation of spinning svgs.
- * @param {Object} settings - Settings for the animation.
- * @param {string} settings.tag - A valid HTML tag that exists in the DOM.
- * @param {string} settings.svg - The SVG string that will be used in the animation.
- * @param {string} settings.svgQuery - A query string that will be replaced with the values in settings.colours.
- * @param {number} settings.svgWidth - The width of the svg when rendered on the canvas.
- * @param {Array<string>} settings.colours - An array of colours that will be used for the animation.
- * @memberof SpinningSVGs
+ * Initializes a canvas element with an animation of spinning SVGs.
+ *
+ * @param settings - Settings for the animation.
+ * @param settings.tag - A valid HTML tag that exists in the DOM.
+ * @param settings.svg - The SVG string that will be used in the animation.
+ * @param settings.svgQuery - A query string that will be replaced with the values in `settings.colours`.
+ * @param settings.svgWidth - The width of the SVG when rendered on the canvas.
+ * @param settings.colours - An array of colors that will be used for the animation.
  */
 export function SpinningSVGs({ settings }: { settings: GeneralSettings }) {
   const animationTimer = AnimationTimer();

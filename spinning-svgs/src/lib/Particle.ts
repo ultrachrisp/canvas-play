@@ -6,9 +6,9 @@ interface Particle {
   numOfColours: number;
 }
 
-export type AnimationState = "spin" | "fadeIn" | "hover" | "wave";
+type AnimationState = "spin" | "fadeIn" | "hover" | "wave";
 
-export type ParticleType = {
+type ParticleType = {
   hover: () => void;
   update: (params: { frame: number; speedFactor: number }) => void;
   draw: (
@@ -27,13 +27,13 @@ export type ParticleType = {
  * Creates a Particle object that can perform various animations such as
  * fade-in, hover, and wave, and can be drawn on a canvas.
  *
- * @param {number} width - The width of the particle.
- * @param {number} height - The height of the particle.
- * @param {number} arrayPositionX - The X position of the particle in the grid.
- * @param {number} arrayPositionY - The Y position of the particle in the grid.
- * @param {number} numOfColours - The number of colours available for the particle.
- * @returns {ParticleType} - An object with methods to manipulate and render
- *   the particle, including:
+ * @param args - Settings of the particle.
+ * @param args.width - The width of the particle.
+ * @param args.height - The height of the particle.
+ * @param args.arrayPositionX - The X position of the particle in the grid.
+ * @param args.arrayPositionY - The Y position of the particle in the grid.
+ * @param args.numOfColours - The number of colours available for the particle.
+ * @returns An object with methods to manipulate and render the particle, including:
  *   - `hover()`: Trigger the hover animation.
  *   - `update(params: { frame: number, speedFactor: number })`: Update the particle's state and animation.
  *   - `draw(params: { context: CanvasRenderingContext2D, spriteSheet: HTMLCanvasElement })`: Draw the particle on the canvas.

@@ -1,19 +1,20 @@
-import { Particle, type ParticleType } from "./Particle.ts";
-
-export type MatrixGrid = Array<Array<ParticleType>>;
+import { Particle } from "./Particle.ts";
 
 /**
- * A GridManager is a class that manages a matrix of Particles, all of which
- * are drawn on a single canvas. It can be used to create animations of
- * spinning svgs.
+ * A GridManager is a utility that manages a matrix of Particles, all of which
+ * are drawn on a single canvas. It is used to create animations of spinning SVGs.
  *
- * @param {Object} args - Settings for the GridManager.
- * @param {number} args.cellWidth - The width of each cell in the grid.
- * @param {number} args.numOfSprites - The number of sprites that will be drawn on the canvas.
- * @param {number} args.canvasWidth - The width of the canvas.
- * @param {number} args.canvasHeight - The height of the canvas.
- * @returns {Object} A GridManager object with methods to `getGrid`, `resize`,
- *   `update`, `draw`, and `prepareWave`.
+ * @param args - Configuration settings for the GridManager.
+ * @param args.cellWidth - The width of each cell in the grid.
+ * @param args.numOfSprites - The number of sprites that will be drawn on the canvas.
+ * @param args.canvasWidth - The width of the canvas.
+ * @param args.canvasHeight - The height of the canvas.
+ * @returns A GridManager object with the following methods:
+ * - `getGrid()`: Retrieves the grid of particles.
+ * - `resize({ canvasWidth, canvasHeight })`: Resizes the grid based on new canvas dimensions.
+ * - `update({ frame, speedFactor })`: Updates the state of all particles in the grid.
+ * - `draw({ context, spriteSheet })`: Draws the grid of particles onto the canvas.
+ * - `prepareWave({ targetRow, targetColumn })`: Prepares a wave animation starting from a target particle.
  */
 export function GridManager(
   { cellWidth, numOfSprites, canvasWidth, canvasHeight }: {
