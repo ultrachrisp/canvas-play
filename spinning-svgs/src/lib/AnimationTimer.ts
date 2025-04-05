@@ -48,5 +48,5 @@ export function AnimationTimer() {
 }
 
 function hasTouchSupport() {
-  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
 }
