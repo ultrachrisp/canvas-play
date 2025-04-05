@@ -7,12 +7,6 @@
     "dev": "vite",
     "build": "tsc && vite build"
   },
-  "compilerOptions": {
-    "lib": [
-      "dom",
-      "esnext"
-    ]
-  },
   "publish": {
     "exclude": [
       "dist"
