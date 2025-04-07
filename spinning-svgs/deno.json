@@ -20,6 +20,7 @@
   },
   "imports": {
     "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.4",
+    "lil-gui": "npm:lil-gui@^0.20.0",
     "typescript": "npm:typescript@^5.8.2",
     "vite": "npm:vite@^6.2.2"
   }

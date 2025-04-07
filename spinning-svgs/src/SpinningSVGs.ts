@@ -6,6 +6,8 @@ import {
   GridManager,
 } from "./lib/GridManager.ts";
 
+import { DebuggingWindow } from "./lib/DebugWindow.ts";
+
 /**
  * Represents the general settings for the spinning SVG animation.
  *
@@ -15,6 +17,7 @@ import {
  * @property svgQuery - A query string that will be replaced with the values in `colours`.
  * @property svgWidth - The width of the SVG when rendered on the canvas.
  * @property colours - An array of colours that will be used for the animation.
+ * @property colours - Toggle the visibility of the debug window
  */
 export interface GeneralSettings {
   tag: string;
@@ -22,6 +25,7 @@ export interface GeneralSettings {
   svgQuery: string;
   svgWidth: number;
   colours: Array<string>;
+  showDebug: boolean;
 }
 
 /**
@@ -35,6 +39,8 @@ export interface GeneralSettings {
  * @param settings.colours - An array of colors that will be used for the animation.
  */
 export function SpinningSVGs({ settings }: { settings: GeneralSettings }) {
+  DebuggingWindow({ settings })
+
   const animationTimer = AnimationTimer();
   const canvasManager = CanvasManager({ settings });
   const { canvasWidth, canvasHeight } = canvasManager.resize();
