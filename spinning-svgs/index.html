@@ -24,6 +24,7 @@
     </section>
     <script type="module">
       import { SpinningSVGs } from "./mod.ts";
+      import GUI from 'lil-gui';
 
       // useful for dev, but moved inline for publishing
       //import "./src/style.css";
@@ -48,7 +49,29 @@
           showDebug: true,
       };
 
-      SpinningSVGs({ settings });
+
+      // very messy, but got something working
+      const gui = new GUI();
+      const colours = Object.assign({}, settings.colours);
+
+      const svgColour = gui.addFolder("Colours");
+      Object.keys(colours).forEach((key) => {
+      // svgColour.add(colours, key);
+        svgColour.addColor(colours, key, '');
+      });
+
+
+        gui.onChange(evt => {
+          const updatedColours = Object.keys(colours).map(function (key) {
+            console.log(colours[key]);
+            return colours[key];
+          });
+
+          console.log('updated colours: ', updatedColours);
+          SpinningSVGs({ settings: { ...settings, colours: updatedColours } });
+        })
+
+      SpinningSVGs({settings: {...settings} });
     </script>
   </body>
 </html>
